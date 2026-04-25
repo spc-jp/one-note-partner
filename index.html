@@ -1,0 +1,619 @@
+import React, { useState, useRef } from 'react';
+import { 
+  BookOpen, 
+  Target, 
+  LayoutTemplate, 
+  Coins, 
+  Share2, 
+  CheckCircle2, 
+  Save,
+  ArrowRight,
+  PlusCircle,
+  Trash2,
+  Moon,
+  Sun,
+  PlaySquare,
+  RotateCcw,
+  Check,
+  FileText,
+  Copy,
+  BookType,
+  Handshake
+} from 'lucide-react';
+
+// === デモデータ（たびみっけ ＆ 共創パートナー展開モデル） ===
+const DEMO_DATA = {
+  concept: {
+    target: 'インバウンド特需で稼ぎたいが、自社商品や店舗を持たない副業・新規事業希望者',
+    pain: 'インバウンドの波に乗りたいが、語学力も資金もない。単発の仕事ではなく、毎月安定したストック収入が欲しい。',
+    before: 'インバウンドで儲かっているニュースを見ながら「何かできないか」と悩むだけで、具体的な一歩を踏み出せていない状態',
+    after: '「たびみっけ」を地域の民泊や旅館に提案するだけで、多言語対応の課題を解決して感謝されながら、毎月のストック報酬を得ている状態',
+    price: 15000,
+    salesTarget: 10
+  },
+  structure: {
+    free_title: '【インバウンド特需に乗る】語学力・店舗ゼロから毎月の継続報酬を積み上げる「たびみっけ」代理店マニュアル',
+    free_intro: '「インバウンドで儲かっているニュースを見るたび、自分も何かできないかと思う…」\nでも、語学力も資金もない。そんなあなたへ。本記事では、写真1枚で3言語対応のAIガイドができる『たびみっけ』を代理販売し、継続収益を得る仕組みを完全公開します。',
+    free_pain: '・インバウンドビジネスを始めたいが初期費用がない\n・英語や中国語が話せないからムリだと諦めている\n・単発の労働ではなく、毎月のストック収入が欲しい',
+    free_solution: 'この記事の「提案スクリプト」を民泊オーナーや地域の飲食店に送るだけで、彼らの「多言語対応の悩み」を解決し、あなたには毎月の代理店報酬が入り続けます。',
+    free_profile: '私は語学力ゼロから「たびみっけ」の代理店として活動し、地域の宿泊施設に喜ばれながら毎月安定したストック収益を上げています。その提案の型をすべて公開します。',
+    free_cta: '本記事のノウハウは、飽和を防ぐため一定部数販売ごとに値上げします。最も安く手に入る「今」、先行者利益を掴んでください。',
+    paid_intro: 'ご購入ありがとうございます。ここからが実践編です。まずは「たびみっけ」の威力を体験し、すぐに提案できるよう準備しましょう。',
+    paid_main: '第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n第4章：成約率を倍増させる、スマホを使ったデモの見せ方',
+    paid_pitfall: '💡よくある失敗：機能（AIや3言語対応）ばかりを説明すること。「スタッフの案内業務が減る」「外国人客の満足度が上がり高評価レビューが増える」という未来を語りましょう。',
+    paid_action: '読み終わったら、まずはGoogleマップで地元の「民泊」を検索し、第3章のDMテンプレートを3件送ってみましょう。',
+    paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる「たびみっけ紹介用チラシ（PDF）」と「共創パートナー契約書ひな形」をダウンロードできます。'
+  },
+  products: [
+    { id: 1, name: 'たびみっけ 月額利用料（継続代理店報酬）', type: '直接提携', reward: 5000 },
+    { id: 2, name: '初期設定・現地写真撮影サポート代行', type: '自社商品・コンサル', reward: 30000 }
+  ],
+  checklist: {
+    profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true,
+  },
+  manual: {
+    title: '【完全版】たびみっけ 代理店営業マニュアル＆提案スクリプト',
+    content: `【はじめに】
+本マニュアルは、「たびみっけ」を宿泊施設や飲食店へ提案し、スムーズに成約を獲得するための実践的な手順です。
+以下のステップに沿って、一つずつ行動を進めてください。
+
+■ １．ターゲット施設の選定
+まずは以下の条件に当てはまる施設をリストアップしましょう。
+
+・ 狙うべき施設
+  - 民泊・ゲストハウス
+  - 家族経営の小規模な旅館やホテル
+  - 外国人客が増えている地域の飲食店
+
+・ なぜそこが狙い目なのか？
+  - インバウンド客は増えているが、多言語を話せるスタッフを雇う資金的余裕がないから。
+  - 道案内や周辺のおすすめスポットを聞かれるたびに、翻訳アプリを使いながら対応して時間を奪われているから。
+
+■ ２．提案の切り口（機能ではなく未来を語る）
+営業の際は「機能」ではなく「導入後のラクになる未来」を伝えます。
+
+・ 【NGな提案】（機能の説明）
+  - 「AIを使って、日本語・英語・中国語に対応したトラベルガイドアプリです」
+
+・ 【OKな提案】（ベネフィットの説明）
+  - 「外国人のお客様から『近くの美味しいお店』を聞かれた時、スマホをかざしてもらうだけで自動で母国語案内してくれます」
+  - 「スタッフさんの案内にかかる時間が実質ゼロになり、本来の業務に集中できます」
+
+■ ３．魔法のDMスクリプト（コピペ用）
+以下のテキストをコピーして、ターゲット施設の問い合わせフォームやSNSのDMに送信してください。
+
+・ 件名：
+  外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？
+
+・ 本文：
+  〇〇（施設名）のオーナー様
+  突然のご連絡失礼いたします。地域でインバウンド支援を行っております〇〇と申します。
+
+  現在、多くの宿泊施設様から「外国人ゲストに近隣のおすすめスポットを聞かれるが、多言語での案内が難しくスタッフの負担になっている」というお悩みを伺っております。
+
+  そこで、施設内に「1枚の写真を置くだけ」で、ゲストのスマホで自動的に周辺の多言語AIガイドが起動する『たびみっけ』というサービスをご案内しております。
+
+  初期費用〇〇円、月額〇〇円で、スタッフ様の案内対応時間を劇的に削減し、ゲストの満足度（レビュー評価）を向上させることが可能です。
+  もしご興味がございましたら、10分ほどオンラインで実際のデモ画面をお見せできればと存じますが、いかがでしょうか？
+
+■ ４．契約獲得から納品までの５ステップ
+返信が来たら、以下の手順で進めます。
+
+・ [手順1] オンライン商談にて、自分のスマホ画面を共有し「たびみっけ」のデモを見せる
+・ [手順2] 申込書の記入・回収を行う
+・ [手順3] 施設周辺の「おすすめスポット（飲食店や観光地）」を3〜5箇所ヒアリングする
+・ [手順4] システムへ写真・データを登録する（※ご自身で難しい場合は本部や代行へ依頼）
+・ [手順5] 施設へ「QRコード付き写真パネル」を納品・設置して完了！`
+  },
+  contract: {
+    title: '共創パートナー基本契約書',
+    content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「みっけシリーズ（たびみっけ等）」のサービス全般とする。（※今後追加される新サービスについても、原則として本契約の対象に含むものとする。ただし、個別のサービスごとに報酬等の条件が異なる場合は、別途覚書にて定める）\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以後も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
+  }
+};
+
+const BLANK_DATA = {
+  concept: { target: '', pain: '', before: '', after: '', price: 10000, salesTarget: 10 },
+  structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
+  products: [],
+  checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false },
+  manual: { 
+    title: '', 
+    content: `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\n■ １．ターゲットの選定\n・ どんな人を/企業を狙うか？\n  - \n  - \n・ なぜそこが狙い目なのか？\n  - \n  - \n\n■ ２．提案の切り口（ベネフィット）\n・ 【NGな提案】\n  - \n・ 【OKな提案】（導入後の良い未来）\n  - \n\n■ ３．提案スクリプト（コピペ用）\n・ 件名：\n\n・ 本文：\n\n\n■ ４．契約・導入までのステップ\n・ [手順1] \n・ [手順2] \n・ [手順3] \n・ [手順4] `
+  },
+  contract: { title: '共創パートナー基本契約書', content: '' }
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('concept');
+  const [theme, setTheme] = useState('light');
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+  
+  const [concept, setConcept] = useState(BLANK_DATA.concept);
+  const [structure, setStructure] = useState(BLANK_DATA.structure);
+  const [products, setProducts] = useState(BLANK_DATA.products);
+  const [checklist, setChecklist] = useState(BLANK_DATA.checklist);
+  const [manual, setManual] = useState(BLANK_DATA.manual);
+  const [contract, setContract] = useState(BLANK_DATA.contract);
+
+  const exportTextRef = useRef(null);
+  const manualTextRef = useRef(null);
+  const contractTextRef = useRef(null);
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
+  };
+
+  const loadDemoData = () => {
+    setConcept(DEMO_DATA.concept);
+    setStructure(DEMO_DATA.structure);
+    setProducts(DEMO_DATA.products);
+    setChecklist(DEMO_DATA.checklist);
+    setManual(DEMO_DATA.manual);
+    setContract(DEMO_DATA.contract);
+    showNotification('デモデータ（たびみっけ版）を読み込みました', 'success');
+  };
+
+  const clearData = () => {
+    setConcept(BLANK_DATA.concept);
+    setStructure(BLANK_DATA.structure);
+    setProducts(BLANK_DATA.products);
+    setChecklist(BLANK_DATA.checklist);
+    setManual(BLANK_DATA.manual);
+    setContract(BLANK_DATA.contract);
+    showNotification('データをクリアしました', 'info');
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    showNotification(`${newTheme === 'dark' ? 'ダーク' : 'ライト'}モードに切り替えました`, 'default');
+  };
+
+  const handleChange = (setter) => (e) => {
+    setter(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const toggleCheck = (key) => {
+    setChecklist({ ...checklist, [key]: !checklist[key] });
+  };
+
+  const addProduct = () => {
+    setProducts([...products, { id: Date.now(), name: '', type: '直接提携', reward: 0 }]);
+  };
+
+  const removeProduct = (id) => {
+    setProducts(products.filter(p => p.id !== id));
+  };
+
+  const handleCopy = (ref, successMsg) => {
+    if (ref.current) {
+      ref.current.select();
+      try {
+        document.execCommand('copy');
+        showNotification(successMsg, 'success');
+      } catch (err) {
+        showNotification('コピーに失敗しました。手動でコピーしてください。', 'error');
+      }
+    }
+  };
+
+  const generateExportText = () => {
+    return `# ${structure.free_title || '（タイトル未入力）'}
+
+${structure.free_intro || '（冒頭文未入力）'}
+
+## こんなお悩みありませんか？
+${structure.free_pain || '（悩みへの共感未入力）'}
+現状：${concept.before || '（Before未入力）'}
+
+## 本記事を読むとこう変わります
+${structure.free_solution || '（解決策未入力）'}
+理想：${concept.after || '（After未入力）'}
+
+## なぜ私がこれを語るのか（実績）
+${structure.free_profile || '（実績未入力）'}
+
+## 今すぐ読むべき理由
+${structure.free_cta || '（CTA未入力）'}
+
+
+---
+※ここから有料パート（価格設定：${concept.price}円）
+---
+
+# 【実践編】マニュアル本編
+${structure.paid_intro || '（導入未入力）'}
+
+## 本編マニュアル
+${structure.paid_main || '（本編未入力）'}
+
+## 💡よくあるつまづきポイントと対策
+${structure.paid_pitfall || '（つまづきポイント未入力）'}
+
+${products.length > 0 ? `## 必要なツール・サービス\n※ここで以下の副産物へのリンクを自然に紹介します\n${products.map(p => `・${p.name}`).join('\n')}\n` : ''}
+## 今すぐやるべきアクションプラン
+${structure.paid_action || '（アクションプラン未入力）'}
+
+## ご購入者特典
+${structure.paid_bonus || '（特典未入力）'}
+
+最後までお読みいただきありがとうございました。
+よろしければ、SNS等で感想をシェアしていただけると嬉しいです！
+`;
+  };
+
+  return (
+    <div className={`${theme === 'dark' ? 'dark' : ''}`}>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300">
+        
+        {notification.show && (
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4">
+            <div className={`px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 text-sm
+              ${notification.type === 'success' ? 'bg-green-500 text-white' : 
+                notification.type === 'info' ? 'bg-blue-500 text-white' : 'bg-slate-800 dark:bg-white text-white dark:text-slate-800'}`}>
+              <Check className="w-4 h-4" />
+              {notification.message}
+            </div>
+          </div>
+        )}
+
+        {/* サイドバー */}
+        <div className="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-4 flex flex-col h-screen sticky top-0 transition-colors">
+          <div className="flex items-center gap-2 mb-8 px-2">
+            <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <h1 className="font-bold text-lg leading-tight">1記事戦略<br/>パートナー展開ダッシュボード</h1>
+          </div>
+          
+          <nav className="flex flex-col gap-1.5 overflow-y-auto pb-4">
+            <SidebarItem icon={<Target className="w-5 h-5"/>} label="1. 変化設計" active={activeTab === 'concept'} onClick={() => setActiveTab('concept')} />
+            <SidebarItem icon={<LayoutTemplate className="w-5 h-5"/>} label="2. 記事構成作成" active={activeTab === 'structure'} onClick={() => setActiveTab('structure')} />
+            <SidebarItem icon={<Coins className="w-5 h-5"/>} label="3. 副産物設計" active={activeTab === 'monetization'} onClick={() => setActiveTab('monetization')} />
+            <SidebarItem icon={<Share2 className="w-5 h-5"/>} label="4. 導線設計" active={activeTab === 'routing'} onClick={() => setActiveTab('routing')} />
+            
+            <div className="my-2 border-t border-slate-200 dark:border-slate-700"></div>
+            
+            <SidebarItem icon={<FileText className="w-5 h-5"/>} label="5. note下書き出力" active={activeTab === 'export'} onClick={() => setActiveTab('export')} />
+            <SidebarItem icon={<BookType className="w-5 h-5"/>} label="6. 特典マニュアル" active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} />
+            <SidebarItem icon={<Handshake className="w-5 h-5"/>} label="7. 共創パートナー契約" active={activeTab === 'contract'} onClick={() => setActiveTab('contract')} isHighlight />
+          </nav>
+        </div>
+
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+          <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex justify-between items-center transition-colors shrink-0">
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400">代理店・フランチャイズ構築支援モード</div>
+            <div className="flex items-center gap-4">
+              <button onClick={loadDemoData} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors">
+                <PlaySquare className="w-4 h-4" /> デモデータ読込
+              </button>
+              <button onClick={clearData} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-lg font-bold text-sm hover:bg-rose-100 transition-colors">
+                <RotateCcw className="w-4 h-4" /> クリア
+              </button>
+              <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              </button>
+            </div>
+          </header>
+
+          <div className="flex-1 p-8 overflow-y-auto">
+            <div className="max-w-4xl mx-auto pb-12">
+              
+              {/* 1〜4 は省略せずそのまま */}
+              {activeTab === 'concept' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h2 className="text-2xl font-bold mb-2">変化設計ワークシート</h2>
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm space-y-4">
+                    <EditorField label="ターゲット（誰に向けて？）" name="target" value={concept.target} onChange={handleChange(setConcept)} placeholder="例：本業が忙しいがnoteで収益化したい人" />
+                    <EditorField label="読者の悩み" name="pain" value={concept.pain} onChange={handleChange(setConcept)} placeholder="例：低額記事を量産しているが月数千円しか稼げず疲弊している" rows={3} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 items-center">
+                      <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border">
+                        <EditorField label="Before（読む前）" name="before" value={concept.before} onChange={handleChange(setConcept)} placeholder="現在のダメな状態" rows={4} />
+                      </div>
+                      <div className="hidden md:flex justify-center"><ArrowRight className="w-8 h-8 text-blue-300" /></div>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <EditorField label="After（読んだ後 / 成功体験）" name="after" value={concept.after} onChange={handleChange(setConcept)} placeholder="読者が得られる究極の変化" rows={4} />
+                      </div>
+                    </div>
+                  </div>
+                  <NextButton onClick={() => { showNotification('保存しました', 'success'); setActiveTab('structure'); }} />
+                </div>
+              )}
+
+              {activeTab === 'structure' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h2 className="text-2xl font-bold mb-2">記事構成テンプレート</h2>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm border-t-4 border-t-green-500">
+                      <h3 className="font-bold text-lg mb-4 text-green-700 dark:text-green-400">無料パート（セールス）</h3>
+                      <div className="space-y-4">
+                        <EditorField label="1. タイトル" name="free_title" value={structure.free_title} onChange={handleChange(setStructure)} />
+                        <EditorField label="2. 冒頭文" name="free_intro" value={structure.free_intro} onChange={handleChange(setStructure)} rows={3} />
+                        <EditorField label="3. 悩みへの共感" name="free_pain" value={structure.free_pain} onChange={handleChange(setStructure)} rows={3} />
+                        <EditorField label="4. 解決策の提示" name="free_solution" value={structure.free_solution} onChange={handleChange(setStructure)} rows={3} />
+                        <EditorField label="5. 自己紹介・実績" name="free_profile" value={structure.free_profile} onChange={handleChange(setStructure)} rows={2} />
+                        <EditorField label="6. CTA（今買うべき理由）" name="free_cta" value={structure.free_cta} onChange={handleChange(setStructure)} rows={2} />
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm border-t-4 border-t-blue-500">
+                      <h3 className="font-bold text-lg mb-4 text-blue-700 dark:text-blue-400">有料パート（商品）</h3>
+                      <div className="space-y-4">
+                        <EditorField label="1. 導入" name="paid_intro" value={structure.paid_intro} onChange={handleChange(setStructure)} rows={2} />
+                        <EditorField label="2. 本編" name="paid_main" value={structure.paid_main} onChange={handleChange(setStructure)} rows={6} />
+                        <EditorField label="3. つまずくポイント先回り" name="paid_pitfall" value={structure.paid_pitfall} onChange={handleChange(setStructure)} rows={3} />
+                        <EditorField label="4. アクションプラン" name="paid_action" value={structure.paid_action} onChange={handleChange(setStructure)} rows={3} />
+                        <EditorField label="5. 特典・サポート案内" name="paid_bonus" value={structure.paid_bonus} onChange={handleChange(setStructure)} rows={2} />
+                      </div>
+                    </div>
+                  </div>
+                  <NextButton onClick={() => { showNotification('保存しました', 'success'); setActiveTab('monetization'); }} />
+                </div>
+              )}
+
+              {activeTab === 'monetization' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h2 className="text-2xl font-bold mb-2">価格設定 ＆ 副産物設計</h2>
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm">
+                    <h3 className="font-bold text-lg mb-4">note記事の価格設定（入口）</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">価格:</span>
+                        <input type="number" name="price" value={concept.price} onChange={handleChange(setConcept)} className="w-full p-2 border rounded bg-transparent text-right font-bold" />
+                        <span className="font-bold">円</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">目標月間販売数:</span>
+                        <input type="number" name="salesTarget" value={concept.salesTarget} onChange={handleChange(setConcept)} className="w-full p-2 border rounded bg-transparent text-right font-bold" />
+                        <span className="font-bold">部</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm mt-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-lg">副産物（紹介・提携・代理店報酬）</h3>
+                      <button onClick={addProduct} className="flex items-center gap-1 text-sm text-blue-600 font-bold"><PlusCircle className="w-4 h-4" /> 追加</button>
+                    </div>
+                    <div className="space-y-3">
+                      {products.map((product, index) => (
+                        <div key={product.id} className="flex flex-wrap gap-2 items-center bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border">
+                          <input type="text" placeholder="サービス名" className="flex-1 p-2 text-sm border rounded bg-white dark:bg-slate-700" value={product.name} onChange={(e) => { const newProducts = [...products]; newProducts[index].name = e.target.value; setProducts(newProducts); }} />
+                          <input type="number" placeholder="単価" className="w-24 p-2 text-sm border rounded bg-white dark:bg-slate-700 text-right" value={product.reward} onChange={(e) => { const newProducts = [...products]; newProducts[index].reward = Number(e.target.value); setProducts(newProducts); }} />
+                          <span className="text-sm">円/件</span>
+                          <button onClick={() => removeProduct(product.id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded ml-auto"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 p-4 rounded-lg">
+                      <p className="font-bold text-emerald-800 dark:text-emerald-400 mb-2">推定総合月間収益</p>
+                      <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                        {((concept.price * concept.salesTarget) + (concept.salesTarget * 0.3 * products.reduce((sum, p) => sum + Number(p.reward || 0), 0))).toLocaleString()} <span className="text-lg">円</span>
+                      </div>
+                    </div>
+                  </div>
+                  <NextButton onClick={() => { showNotification('保存しました', 'success'); setActiveTab('routing'); }} />
+                </div>
+              )}
+
+              {activeTab === 'routing' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h2 className="text-2xl font-bold mb-2">導線設計チェックリスト</h2>
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border shadow-sm">
+                    <h3 className="font-bold text-lg mb-4">購入までの導線</h3>
+                    <div className="space-y-3">
+                      <CheckItem checked={checklist.profile} onChange={() => toggleCheck('profile')} label="プロフィール文に実績・ターゲットが入っている" />
+                      <CheckItem checked={checklist.freePartCTA} onChange={() => toggleCheck('freePartCTA')} label="SNSの固定ツイート等にnoteへのリンクがある" />
+                      <CheckItem checked={checklist.actionPlan} onChange={() => toggleCheck('actionPlan')} label="有料記事の最後に読者に行動させるアクションプランがある" />
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button 
+                      onClick={() => { showNotification('設計完了！noteの下書きを生成します', 'success'); setActiveTab('export'); }}
+                      className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-md"
+                    >
+                      <FileText className="w-5 h-5" /> note下書き出力へ進む
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 5. エクスポート（note下書き）タブ */}
+              {activeTab === 'export' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex justify-between items-end mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2">note下書き出力</h2>
+                      <p className="text-slate-500 dark:text-slate-400">これまでの設計データを統合しました。コピーしてnoteの執筆画面に貼り付けてください。</p>
+                    </div>
+                    <button 
+                      onClick={() => handleCopy(exportTextRef, 'note下書きをコピーしました！')}
+                      className="bg-slate-800 dark:bg-slate-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-slate-700 dark:hover:bg-slate-600 transition shadow-md"
+                    >
+                      <Copy className="w-4 h-4" /> 全文をコピー
+                    </button>
+                  </div>
+
+                  <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <textarea 
+                      ref={exportTextRef}
+                      readOnly
+                      value={generateExportText()}
+                      className="w-full h-[500px] p-6 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-sm outline-none resize-none"
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end mt-6">
+                    <button 
+                      onClick={() => { showNotification('次は代理店マニュアルを作成します', 'success'); setActiveTab('manual'); }}
+                      className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md"
+                    >
+                      <BookType className="w-5 h-5" /> 特典マニュアル作成に進む
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 6. 特典マニュアル作成タブ */}
+              {activeTab === 'manual' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex justify-between items-end mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2">特典マニュアル作成 (Word用)</h2>
+                      <p className="text-slate-500 dark:text-slate-400">note購入者（代理店）にそのまま渡せる「営業マニュアル」や「スクリプト」を作成します。</p>
+                    </div>
+                    <button 
+                      onClick={() => handleCopy(manualTextRef, 'マニュアルをコピーしました！WordやGoogleドキュメントに貼り付けてください')}
+                      className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md"
+                    >
+                      <Copy className="w-4 h-4" /> Word用にコピー
+                    </button>
+                  </div>
+
+                  {/* A4用紙を模したデザイン領域 */}
+                  <div className="bg-slate-200 dark:bg-slate-950 p-4 md:p-8 rounded-xl flex justify-center overflow-x-auto shadow-inner">
+                    <div className="bg-white w-full max-w-[210mm] min-h-[297mm] shadow-lg rounded-sm p-8 md:p-12 transition-colors">
+                      <input 
+                        type="text" 
+                        name="title"
+                        value={manual.title}
+                        onChange={handleChange(setManual)}
+                        placeholder="マニュアルのタイトルを入力"
+                        className="w-full text-2xl md:text-3xl font-bold text-center mb-8 border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none text-slate-800 bg-transparent transition-colors"
+                      />
+                      <textarea
+                        ref={manualTextRef}
+                        name="content"
+                        value={manual.content}
+                        onChange={handleChange(setManual)}
+                        placeholder="ここにマニュアルの本文、提案スクリプト、ターゲットなどを記述します。"
+                        className="w-full h-[600px] text-base leading-relaxed text-slate-800 outline-none resize-none bg-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end mt-6">
+                    <button 
+                      onClick={() => { showNotification('最後に共創パートナー契約書を作成します', 'success'); setActiveTab('contract'); }}
+                      className="bg-amber-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-amber-700 transition shadow-md"
+                    >
+                      <Handshake className="w-5 h-5" /> 共創パートナー契約書へ進む
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 7. 共創パートナー契約書タブ */}
+              {activeTab === 'contract' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex justify-between items-end mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2">共創パートナー契約書 (自動生成)</h2>
+                      <p className="text-slate-500 dark:text-slate-400">
+                        「代理店」ではなく「共創パートナー」として契約を結ぶためのひな形です。<br/>
+                        ※「みっけシリーズ」全体を包括できる内容になっています。
+                      </p>
+                    </div>
+                    <button 
+                      onClick={() => handleCopy(contractTextRef, '契約書をコピーしました！Wordやクラウドサイン等に貼り付けてご活用ください')}
+                      className="bg-amber-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-amber-700 transition shadow-md"
+                    >
+                      <Copy className="w-4 h-4" /> Word用にコピー
+                    </button>
+                  </div>
+
+                  {/* A4用紙を模したデザイン領域 */}
+                  <div className="bg-slate-200 dark:bg-slate-950 p-4 md:p-8 rounded-xl flex justify-center overflow-x-auto shadow-inner">
+                    <div className="bg-white w-full max-w-[210mm] min-h-[297mm] shadow-lg rounded-sm p-8 md:p-12 transition-colors">
+                      <input 
+                        type="text" 
+                        name="title"
+                        value={contract.title}
+                        onChange={handleChange(setContract)}
+                        placeholder="契約書のタイトルを入力"
+                        className="w-full text-2xl font-bold text-center mb-8 border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none text-slate-800 bg-transparent transition-colors"
+                      />
+                      <textarea
+                        ref={contractTextRef}
+                        name="content"
+                        value={contract.content}
+                        onChange={handleChange(setContract)}
+                        placeholder="ここに契約書の本文を記述します。"
+                        className="w-full h-[800px] text-sm leading-relaxed text-slate-800 outline-none resize-none bg-transparent"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800 mt-6">
+                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5" />
+                      契約書のポイント
+                    </h4>
+                    <ul className="list-disc list-inside text-sm text-amber-700 dark:text-amber-300 space-y-1">
+                      <li><strong>「第2条（対象サービス）」</strong>で「みっけシリーズ全般」を対象としており、今後新しいアプリが追加された際にも、わざわざ契約を結び直す手間が省けます。</li>
+                      <li><strong>「第3条3項」</strong>に「下請けではなく共創パートナーである」旨を記載し、対等な関係性とモチベーションアップを図っています。</li>
+                      <li>コピー後、WordでPDF化してnoteの特典にするか、クラウドサイン等の電子契約サービスにコピペして使用してください。</li>
+                    </ul>
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// サブコンポーネント
+function SidebarItem({ icon, label, active, onClick, isHighlight }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-3 w-full p-3 rounded-lg text-sm font-bold transition-colors ${
+        active 
+          ? (isHighlight ? 'bg-amber-600 text-white shadow-md' : 'bg-blue-600 text-white shadow-md')
+          : (isHighlight ? 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700')
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+function EditorField({ label, name, value, onChange, placeholder, rows = 1 }) {
+  return (
+    <div>
+      <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">{label}</label>
+      {rows === 1 ? (
+        <input type="text" name={name} value={value} onChange={onChange} placeholder={placeholder} 
+          className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none" />
+      ) : (
+        <textarea name={name} value={value} onChange={onChange} placeholder={placeholder} rows={rows} 
+          className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+      )}
+    </div>
+  );
+}
+
+function CheckItem({ checked, onChange, label }) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer group">
+      <div className={`mt-0.5 rounded-full flex-shrink-0 transition-colors ${checked ? 'text-blue-600' : 'text-slate-300'}`}><CheckCircle2 className="w-5 h-5" /></div>
+      <input type="checkbox" className="hidden" checked={checked} onChange={onChange} />
+      <span className={`text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-700 dark:text-slate-200'}`}>{label}</span>
+    </label>
+  );
+}
+
+function NextButton({ onClick }) {
+  return (
+    <div className="flex justify-end mt-6">
+      <button onClick={onClick} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-md">
+        <Save className="w-4 h-4" /> 保存して次へ
+      </button>
+    </div>
+  );
+}
