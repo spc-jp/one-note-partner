@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1記事戦略パートナー展開ダッシュボード</title>
+  <title>one-note-partner 〜1記事フランチャイズ構築ツール〜</title>
 
   <!-- Tailwind CSS の読み込み -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -63,6 +63,7 @@
     const Copy = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>;
     const BookType = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><path d="M9 8h6"/><path d="M12 8v6"/></svg>;
     const Handshake = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3-6 6"/><path d="m21 16-1.85 1.85a1.5 1.5 0 0 1-2.12 0l-2.83-2.83a1.5 1.5 0 0 1 0-2.12L16 11"/><path d="m3 3 6 6"/><path d="m3 21 1.85-1.85a1.5 1.5 0 0 1 2.12 0l2.83 2.83a1.5 1.5 0 0 1 0 2.12L8 21"/></svg>;
+    const LinkIcon = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
     const Settings = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
 
     // ==========================================
@@ -70,7 +71,7 @@
     // ==========================================
     const BLANK_DATA = {
       project: { name: '', url: '', description: '', target: '' },
-      concept: { target: '', pain: '', before: '', after: '', initialPrice: 1000, targetPrice: 10000, priceCondition: '', salesTarget: 10, lineUrl: '' },
+      concept: { target: '', pain: '', before: '', after: '', initialPrice: 1000, targetPrice: 10000, priceCondition: '', salesTarget: 10, lineUrl: '', catalogUrl: '' },
       structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile_past: '', free_profile_encounter: '', free_profile_current: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
       products: [],
       checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false, setupLine: false },
@@ -94,7 +95,8 @@
         targetPrice: 15000,
         priceCondition: '最初の3名が代理店として活動開始したら4,980円へ値上げ。その後、よくある質問と営業ノウハウを追記して最終的に15,000円にする。',
         salesTarget: 10,
-        lineUrl: 'https://lin.ee/xxxxx（あなたの公式LINE）'
+        lineUrl: 'https://lin.ee/xxxxx（あなたの公式LINE）',
+        catalogUrl: 'https://spc-jp.github.io/mikke-catalog/'
       },
       structure: {
         free_title: '【インバウンド特需に乗る】語学力・店舗ゼロから毎月の継続報酬を積み上げる「たびみっけ」代理店マニュアル',
@@ -109,7 +111,7 @@
         paid_main: '第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n第4章：成約率を倍増させる、スマホを使ったデモの見せ方',
         paid_pitfall: '💡よくある失敗：機能（AIや3言語対応）ばかりを説明すること。「スタッフの案内業務が減る」「外国人客の満足度が上がり高評価レビューが増える」という未来を語りましょう。',
         paid_action: '読み終わったら、まずはGoogleマップで地元の「民泊」を検索し、第3章のDMテンプレートを3件送ってみましょう。',
-        paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる紹介用チラシと「共創パートナー契約書ひな形」をダウンロードできます。'
+        paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる「たびみっけ紹介用チラシ（PDF）」と「共創パートナー契約書ひな形」をダウンロードできます。'
       },
       products: [
         { id: 1, name: 'たびみっけ 月額利用料（継続代理店報酬）', type: '直接提携', reward: 5000 },
@@ -118,11 +120,11 @@
       checklist: { profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true },
       manual: {
         title: '【完全版】たびみっけ 代理店営業マニュアル＆提案スクリプト',
-        content: `【はじめに】\n本マニュアルは、note本編で解説した内容を元に、「たびみっけ」を宿泊施設へ提案し成約を獲得するための実践的な手順です。\n\n■ 第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n・ 狙うべき施設とその理由\n  - 民泊・ゲストハウス、小規模な旅館やホテル\n  - 理由：インバウンド客は増えているが、多言語を話せるスタッフを雇う余裕がないため。\n・ 提案の切り口\n  - 【NG】「AIを使って3言語に対応したガイドアプリです」\n  - 【OK】「外国人のお客様にスマホをかざしてもらうだけで自動で案内できるので、スタッフさんの対応時間が実質ゼロになります」\n\n■ 第2章：Googleマップを使った見込み客探し\n・ [手順1] Googleマップを開き「地域名＋民泊」で検索する。\n・ [手順2] 問い合わせ用のメールアドレスやDM窓口を取得する。\n\n■ 第3章：コピペでOK！魔法のDMテンプレート\n・ 件名：外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？\n・ 本文：（中略。デモとして適切な文章をここに配置します）\n\n■ 第4章：スマホを使ったデモの見せ方\n・ [手順1] 商談時、以下の『カタログサイト』をお客様と一緒に見ながら説明します。\n  ▶ https://tabi-mikke.pages.dev/\n・ [手順2] 申込書の記入・回収を行う。\n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ https://lin.ee/xxxxx`
+        content: `【はじめに】\n本マニュアルは、note本編で解説した内容を元に、「たびみっけ」を宿泊施設へ提案し、成約を獲得するための実践的な手順です。\n各章のステップに沿って、一つずつ行動を進めてください。\n\n■ 第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\nまずは提案する相手と、伝えるべき「メリット」を整理します。\n\n・ 狙うべき施設とその理由\n  - 民泊・ゲストハウス、小規模な旅館やホテル\n  - 理由：インバウンド客は増えているが、多言語を話せるスタッフを雇う資金的余裕がないため。\n・ 提案の切り口（機能ではなく未来を語る）\n  - 【NG】「AIを使って3言語に対応したガイドアプリです」\n  - 【OK】「外国人のお客様にスマホをかざしてもらうだけで自動で案内できるので、スタッフさんの対応時間が実質ゼロになります」\n\n■ 第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n営業先はスマホ1台で簡単に見つかります。\n\n・ [手順1] Googleマップを開き「地域名＋民泊」または「地域名＋ゲストハウス」で検索する。\n・ [手順2] 外国人観光客の口コミ（英語や中国語など）が多くついている施設をピックアップする。\n・ [手順3] その施設の公式サイトやSNS（Instagram等）から、問い合わせ用のメールアドレスやDM窓口を取得する。\n\n■ 第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n以下のテキストをコピーして、第2章で集めた連絡先に送信してください。\n\n・ 件名：\n  外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？\n\n・ 本文：\n  〇〇（施設名）のオーナー様\n  突然のご連絡失礼いたします。地域でインバウンド支援を行っております〇〇と申します。\n\n  現在、多くの宿泊施設様から「外国人ゲストに近隣のおすすめスポットを聞かれるが、多言語での案内が難しくスタッフの負担になっている」というお悩みを伺っております。\n\n  そこで、施設内に「1枚の写真を置くだけ」で、ゲストのスマホで自動的に周辺の多言語AIガイドが起動する『たびみっけ』というサービスをご案内しております。\n\n  初期費用〇〇円、月額〇〇円で、スタッフ様の案内対応時間を劇的に削減し、ゲストの満足度（レビュー評価）を向上させることが可能です。\n  もしご興味がございましたら、10分ほどオンラインで実際のデモ画面をお見せできればと存じますが、いかがでしょうか？\n\n■ 第4章：成約率を倍増させる、スマホを使ったデモの見せ方\n返信が来たら、以下の手順で成約まで進めます。\n\n・ [手順1] オンライン商談（Zoom等）、または対面にて、以下の『みっけカタログサイト』をお客様と一緒に見ながら説明します。\n  ▶ [カタログサイトURL：自動挿入設定箇所]\n・ [手順2] カタログのデモ画面を開き、「お客様がQRを読み込むと、このようにご自身の言語で表示されます」と実際に操作してみせる。\n・ [手順3] その場で申込書の記入・回収を行い、施設周辺の「おすすめスポット」をヒアリングする。\n・ [手順4] システムへ写真・データを登録し、施設へ「QRコード付き写真パネル」を納品・設置して完了！\n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合や、お客様からの質問で分からないことがあれば、いつでも専用LINEにご相談ください。\n▶ [サポートLINE URL：自動挿入設定箇所]`
       },
       contract: {
         title: '共創パートナー基本契約書',
-        content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及に関し、共創パートナー基本契約を締結する。\n\n第1条（目的）\n乙が「たびみっけ」を顧客に紹介し、利用契約を斡旋する業務について定める。\n\n第2条（対象サービス）\n本契約の対象は「みっけシリーズ（たびみっけ等）」全般とする。\n\n第3条（本業務の遂行）\n乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」としてサービスの改善に協力するよう努めるものとする。`
+        content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「みっけシリーズ（たびみっけ等）」のサービス全般とする。（※今後追加される新サービスについても、原則として本契約の対象に含むものとする。ただし、個別のサービスごとに報酬等の条件が異なる場合は、別途覚書にて定める）\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以後も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
       }
     };
 
@@ -270,7 +272,13 @@ ${structure.paid_bonus || '（特典未入力）'}
 
       // マニュアル初期化・置換ロジック
       const initializeManual = () => {
-        let content = manual.content || `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] 以下の『${project.name || 'カタログサイト'}』をお客様と一緒に見ながら説明します。\n  ▶ ${project.url || '[URL未設定]'}\n・ [手順2] \n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ ${concept.lineUrl || '[LINE未設定]'}`;
+        let content = manual.content || `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] 以下の『${project.name || 'カタログサイト'}』をお客様と一緒に見ながら説明します。\n  ▶ ${concept.catalogUrl || project.url || '[URL未設定]'}\n・ [手順2] \n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ ${concept.lineUrl || '[LINE未設定]'}`;
+        
+        // デモデータの場合は置換処理を行う
+        if (manual.content && manual.content.includes('自動挿入設定箇所')) {
+            content = content.replace('[カタログサイトURL：自動挿入設定箇所]', concept.catalogUrl || project.url || '（※導線設計タブでカタログのURLを設定してください）');
+            content = content.replace('[サポートLINE URL：自動挿入設定箇所]', concept.lineUrl || '（※導線設計タブでLINEのURLを設定してください）');
+        }
         return content;
       };
 
@@ -298,8 +306,11 @@ ${structure.paid_bonus || '（特典未入力）'}
             {/* サイドバー */}
             <div className="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-4 flex flex-col h-screen sticky top-0 transition-colors shrink-0">
               <div className="flex items-center gap-2 mb-8 px-2">
-                <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <h1 className="font-bold text-lg leading-tight">1記事戦略<br/>パートナー展開ダッシュボード</h1>
+                <BookOpen className="w-8 h-8 text-blue-600 dark:text-blue-400 shrink-0" />
+                <div>
+                  <h1 className="font-bold text-lg leading-tight">one-note-partner</h1>
+                  <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">〜1記事フランチャイズ構築ツール〜</p>
+                </div>
               </div>
               
               <nav className="flex flex-col gap-1.5 overflow-y-auto pb-4">
@@ -519,6 +530,7 @@ ${structure.paid_bonus || '（特典未入力）'}
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">ここで設定したURLが、自動的にnoteの下書きや代理店マニュアルに挿入されます。</p>
                         <div className="space-y-4">
                           <EditorField label="公式LINE URL（リスト取り・サポート用）" name="lineUrl" value={concept.lineUrl} onChange={handleChange(setConcept)} placeholder="https://lin.ee/..." />
+                          <EditorField label="みっけカタログサイト URL（代理店の営業武器）" name="catalogUrl" value={concept.catalogUrl} onChange={handleChange(setConcept)} placeholder="https://..." />
                         </div>
                       </div>
 
