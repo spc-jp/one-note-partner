@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class', // classによるダークモード制御
+      darkMode: 'class',
     }
   </script>
 
@@ -20,7 +20,7 @@
   <!-- Babel の読み込み (ブラウザ内でJSXを変換) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- カスタムスタイル (アニメーションとスクロールバー) -->
+  <!-- カスタムスタイル -->
   <style>
     .animate-in {
       animation: fadeIn 0.5s ease-out forwards;
@@ -29,7 +29,6 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* スクロールバーの装飾 */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -37,15 +36,13 @@
   </style>
 </head>
 <body>
-  <!-- Reactアプリのマウントポイント -->
   <div id="root"></div>
 
-  <!-- アプリのコード (Babelでトランスパイル) -->
   <script type="text/babel">
-    const { useState, useRef } = React;
+    const { useState, useRef, useEffect } = React;
 
     // ==========================================
-    // アイコンコンポーネント (LucideアイコンのSVG実装)
+    // アイコンコンポーネント
     // ==========================================
     const BookOpen = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
     const Target = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
@@ -66,113 +63,78 @@
     const Copy = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>;
     const BookType = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><path d="M9 8h6"/><path d="M12 8v6"/></svg>;
     const Handshake = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3-6 6"/><path d="m21 16-1.85 1.85a1.5 1.5 0 0 1-2.12 0l-2.83-2.83a1.5 1.5 0 0 1 0-2.12L16 11"/><path d="m3 3 6 6"/><path d="m3 21 1.85-1.85a1.5 1.5 0 0 1 2.12 0l2.83 2.83a1.5 1.5 0 0 1 0 2.12L8 21"/></svg>;
+    const Settings = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
 
     // ==========================================
-    // デモデータ定義
+    // データ初期値
     // ==========================================
+    const BLANK_DATA = {
+      project: { name: '', url: '', description: '', target: '' },
+      concept: { target: '', pain: '', before: '', after: '', initialPrice: 1000, targetPrice: 10000, priceCondition: '', salesTarget: 10, lineUrl: '' },
+      structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile_past: '', free_profile_encounter: '', free_profile_current: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
+      products: [],
+      checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false, setupLine: false },
+      manual: { title: '', content: '' },
+      contract: { title: '', content: '' }
+    };
+
     const DEMO_DATA = {
+      project: { 
+        name: 'たびみっけ', 
+        url: 'https://tabi-mikke.pages.dev/', 
+        description: '写真1枚でその場所の歴史と物語が動き出す、多言語対応のAIトラベルガイド。', 
+        target: 'インバウンド対応に悩む小規模な民泊や旅館のオーナー。またはそれを提案したい代理店。' 
+      },
       concept: {
         target: 'インバウンド特需で稼ぎたいが、自社商品や店舗を持たない副業・新規事業希望者',
         pain: 'インバウンドの波に乗りたいが、語学力も資金もない。単発の仕事ではなく、毎月安定したストック収入が欲しい。',
         before: 'インバウンドで儲かっているニュースを見ながら「何かできないか」と悩むだけで、具体的な一歩を踏み出せていない状態',
         after: '「たびみっけ」を地域の民泊や旅館に提案するだけで、多言語対応の課題を解決して感謝されながら、毎月のストック報酬を得ている状態',
-        price: 15000,
-        salesTarget: 10
+        initialPrice: 2980,
+        targetPrice: 15000,
+        priceCondition: '最初の3名が代理店として活動開始したら4,980円へ値上げ。その後、よくある質問と営業ノウハウを追記して最終的に15,000円にする。',
+        salesTarget: 10,
+        lineUrl: 'https://lin.ee/xxxxx（あなたの公式LINE）'
       },
       structure: {
         free_title: '【インバウンド特需に乗る】語学力・店舗ゼロから毎月の継続報酬を積み上げる「たびみっけ」代理店マニュアル',
         free_intro: '「インバウンドで儲かっているニュースを見るたび、自分も何かできないかと思う…」\nでも、語学力も資金もない。そんなあなたへ。本記事では、写真1枚で3言語対応のAIガイドができる『たびみっけ』を代理販売し、継続収益を得る仕組みを完全公開します。',
         free_pain: '・インバウンドビジネスを始めたいが初期費用がない\n・英語や中国語が話せないからムリだと諦めている\n・単発の労働ではなく、毎月のストック収入が欲しい',
         free_solution: 'この記事の「提案スクリプト」を民泊オーナーや地域の飲食店に送るだけで、彼らの「多言語対応の悩み」を解決し、あなたには毎月の代理店報酬が入り続けます。',
-        free_profile: '私は語学力ゼロから「たびみっけ」の代理店として活動し、地域の宿泊施設に喜ばれながら毎月安定したストック収益を上げています。その提案の型をすべて公開します。',
+        free_profile_past: '以前の私は、色々な副業に手を出しましたが自分に売れる商品がなく、単発の仕事ばかりで全く稼げず絶望していました。',
+        free_profile_encounter: 'そんな時、「たびみっけ」をはじめとする「みっけシリーズ」に出会いました。「自分で作らなくても、この素晴らしいアプリを困っている人に紹介するだけで良い」と気づいたのです。',
+        free_profile_current: '今では語学力ゼロから「たびみっけ」の代理店として活動し、地域の宿泊施設に喜ばれながら毎月安定したストック収益を上げています。その提案の型をすべて公開します。',
         free_cta: '本記事のノウハウは、飽和を防ぐため一定部数販売ごとに値上げします。最も安く手に入る「今」、先行者利益を掴んでください。',
         paid_intro: 'ご購入ありがとうございます。ここからが実践編です。まずは「たびみっけ」の威力を体験し、すぐに提案できるよう準備しましょう。',
         paid_main: '第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n第4章：成約率を倍増させる、スマホを使ったデモの見せ方',
         paid_pitfall: '💡よくある失敗：機能（AIや3言語対応）ばかりを説明すること。「スタッフの案内業務が減る」「外国人客の満足度が上がり高評価レビューが増える」という未来を語りましょう。',
         paid_action: '読み終わったら、まずはGoogleマップで地元の「民泊」を検索し、第3章のDMテンプレートを3件送ってみましょう。',
-        paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる「たびみっけ紹介用チラシ（PDF）」と「共創パートナー契約書ひな形」をダウンロードできます。'
+        paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる紹介用チラシと「共創パートナー契約書ひな形」をダウンロードできます。'
       },
       products: [
         { id: 1, name: 'たびみっけ 月額利用料（継続代理店報酬）', type: '直接提携', reward: 5000 },
         { id: 2, name: '初期設定・現地写真撮影サポート代行', type: '自社商品・コンサル', reward: 30000 }
       ],
-      checklist: {
-        profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true,
-      },
+      checklist: { profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true },
       manual: {
         title: '【完全版】たびみっけ 代理店営業マニュアル＆提案スクリプト',
-        content: `【はじめに】
-本マニュアルは、note本編で解説した内容を元に、「たびみっけ」を宿泊施設へ提案し、成約を獲得するための実践的な手順です。
-各章のステップに沿って、一つずつ行動を進めてください。
-
-■ 第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか
-まずは提案する相手と、伝えるべき「メリット」を整理します。
-
-・ 狙うべき施設とその理由
-  - 民泊・ゲストハウス、小規模な旅館やホテル
-  - 理由：インバウンド客は増えているが、多言語を話せるスタッフを雇う資金的余裕がないため。
-・ 提案の切り口（機能ではなく未来を語る）
-  - 【NG】「AIを使って3言語に対応したガイドアプリです」
-  - 【OK】「外国人のお客様にスマホをかざしてもらうだけで自動で案内できるので、スタッフさんの対応時間が実質ゼロになります」
-
-■ 第2章：Googleマップを使った見込み客（民泊・旅館）の探し方
-営業先はスマホ1台で簡単に見つかります。
-
-・ [手順1] Googleマップを開き「地域名＋民泊」または「地域名＋ゲストハウス」で検索する。
-・ [手順2] 外国人観光客の口コミ（英語や中国語など）が多くついている施設をピックアップする。
-・ [手順3] その施設の公式サイトやSNS（Instagram等）から、問い合わせ用のメールアドレスやDM窓口を取得する。
-
-■ 第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート
-以下のテキストをコピーして、第2章で集めた連絡先に送信してください。
-
-・ 件名：
-  外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？
-
-・ 本文：
-  〇〇（施設名）のオーナー様
-  突然のご連絡失礼いたします。地域でインバウンド支援を行っております〇〇と申します。
-
-  現在、多くの宿泊施設様から「外国人ゲストに近隣のおすすめスポットを聞かれるが、多言語での案内が難しくスタッフの負担になっている」というお悩みを伺っております。
-
-  そこで、施設内に「1枚の写真を置くだけ」で、ゲストのスマホで自動的に周辺の多言語AIガイドが起動する『たびみっけ』というサービスをご案内しております。
-
-  初期費用〇〇円、月額〇〇円で、スタッフ様の案内対応時間を劇的に削減し、ゲストの満足度（レビュー評価）を向上させることが可能です。
-  もしご興味がございましたら、10分ほどオンラインで実際のデモ画面をお見せできればと存じますが、いかがでしょうか？
-
-■ 第4章：成約率を倍増させる、スマホを使ったデモの見せ方
-返信が来たら、以下の手順で成約まで進めます。
-
-・ [手順1] オンライン商談（Zoom等）、または対面で自分のスマホ画面を共有し「たびみっけ」のデモを見せる。
-・ [手順2] 「お客様がQRを読み込むと、このようにご自身の言語で表示されます」と実際に操作してみせる。
-・ [手順3] その場で申込書の記入・回収を行い、施設周辺の「おすすめスポット（飲食店や観光地）」を3〜5箇所ヒアリングする。
-・ [手順4] システムへ写真・データを登録し、施設へ「QRコード付き写真パネル」を納品・設置して完了！`
+        content: `【はじめに】\n本マニュアルは、note本編で解説した内容を元に、「たびみっけ」を宿泊施設へ提案し成約を獲得するための実践的な手順です。\n\n■ 第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n・ 狙うべき施設とその理由\n  - 民泊・ゲストハウス、小規模な旅館やホテル\n  - 理由：インバウンド客は増えているが、多言語を話せるスタッフを雇う余裕がないため。\n・ 提案の切り口\n  - 【NG】「AIを使って3言語に対応したガイドアプリです」\n  - 【OK】「外国人のお客様にスマホをかざしてもらうだけで自動で案内できるので、スタッフさんの対応時間が実質ゼロになります」\n\n■ 第2章：Googleマップを使った見込み客探し\n・ [手順1] Googleマップを開き「地域名＋民泊」で検索する。\n・ [手順2] 問い合わせ用のメールアドレスやDM窓口を取得する。\n\n■ 第3章：コピペでOK！魔法のDMテンプレート\n・ 件名：外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？\n・ 本文：（中略。デモとして適切な文章をここに配置します）\n\n■ 第4章：スマホを使ったデモの見せ方\n・ [手順1] 商談時、以下の『カタログサイト』をお客様と一緒に見ながら説明します。\n  ▶ https://tabi-mikke.pages.dev/\n・ [手順2] 申込書の記入・回収を行う。\n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ https://lin.ee/xxxxx`
       },
       contract: {
         title: '共創パートナー基本契約書',
-        content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「みっけシリーズ（たびみっけ等）」のサービス全般とする。（※今後追加される新サービスについても、原則として本契約の対象に含むものとする。ただし、個別のサービスごとに報酬等の条件が異なる場合は、別途覚書にて定める）\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以後も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
+        content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及に関し、共創パートナー基本契約を締結する。\n\n第1条（目的）\n乙が「たびみっけ」を顧客に紹介し、利用契約を斡旋する業務について定める。\n\n第2条（対象サービス）\n本契約の対象は「みっけシリーズ（たびみっけ等）」全般とする。\n\n第3条（本業務の遂行）\n乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」としてサービスの改善に協力するよう努めるものとする。`
       }
-    };
-
-    const BLANK_DATA = {
-      concept: { target: '', pain: '', before: '', after: '', price: 10000, salesTarget: 10 },
-      structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
-      products: [],
-      checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false },
-      manual: { 
-        title: '', 
-        content: `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] \n・ [手順2] `
-      },
-      contract: { title: '共創パートナー基本契約書', content: '' }
     };
 
     // ==========================================
     // メインアプリケーション
     // ==========================================
     function App() {
-      const [activeTab, setActiveTab] = useState('concept');
+      const [activeTab, setActiveTab] = useState('project');
       const [theme, setTheme] = useState('light');
       const [notification, setNotification] = useState({ show: false, message: '', type: '' });
       
+      const [project, setProject] = useState(BLANK_DATA.project);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
       const [structure, setStructure] = useState(BLANK_DATA.structure);
       const [products, setProducts] = useState(BLANK_DATA.products);
@@ -184,12 +146,21 @@
       const manualTextRef = useRef(null);
       const contractTextRef = useRef(null);
 
+      // プロジェクト設定から他タブへの自動連携ロジック
+      useEffect(() => {
+        // 新規作成時など、ターゲットが空なら自動で引き継ぐ
+        if (!concept.target && project.target) {
+          setConcept(prev => ({ ...prev, target: project.target }));
+        }
+      }, [project.target]);
+
       const showNotification = (message, type) => {
         setNotification({ show: true, message, type });
         setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
       };
 
       const loadDemoData = () => {
+        setProject(DEMO_DATA.project);
         setConcept(DEMO_DATA.concept);
         setStructure(DEMO_DATA.structure);
         setProducts(DEMO_DATA.products);
@@ -197,9 +168,11 @@
         setManual(DEMO_DATA.manual);
         setContract(DEMO_DATA.contract);
         showNotification('デモデータ（たびみっけ版）を読み込みました', 'success');
+        setActiveTab('project');
       };
 
       const clearData = () => {
+        setProject(BLANK_DATA.project);
         setConcept(BLANK_DATA.concept);
         setStructure(BLANK_DATA.structure);
         setProducts(BLANK_DATA.products);
@@ -207,12 +180,12 @@
         setManual(BLANK_DATA.manual);
         setContract(BLANK_DATA.contract);
         showNotification('データをクリアしました', 'info');
+        setActiveTab('project');
       };
 
       const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
-        showNotification(`${newTheme === 'dark' ? 'ダーク' : 'ライト'}モードに切り替えました`, 'default');
       };
 
       const handleChange = (setter) => (e) => {
@@ -238,13 +211,14 @@
             document.execCommand('copy');
             showNotification(successMsg, 'success');
           } catch (err) {
-            showNotification('コピーに失敗しました。手動でコピーしてください。', 'error');
+            showNotification('コピーに失敗しました。', 'error');
           }
         }
       };
 
+      // 出力テキスト生成（プロジェクト設定の変数を活用）
       const generateExportText = () => {
-        return `# ${structure.free_title || '（タイトル未入力）'}
+        return `# ${structure.free_title || `【完全版】${project.name || '〇〇'} 代理店マニュアル`}
 
 ${structure.free_intro || '（冒頭文未入力）'}
 
@@ -256,15 +230,16 @@ ${structure.free_pain || '（悩みへの共感未入力）'}
 ${structure.free_solution || '（解決策未入力）'}
 理想：${concept.after || '（After未入力）'}
 
-## なぜ私がこれを語るのか（実績）
-${structure.free_profile || '（実績未入力）'}
+## なぜ私がこれを語るのか（実績とストーリー）
+【過去の失敗・絶望】\n${structure.free_profile_past || '（未入力）'}
+【転機・気づき】\n${structure.free_profile_encounter || '（未入力）'}
+【現在の成功・実績】\n${structure.free_profile_current || '（未入力）'}
 
 ## 今すぐ読むべき理由
 ${structure.free_cta || '（CTA未入力）'}
 
-
 ---
-※ここから有料パート（価格設定：${concept.price}円）
+※ここから有料パート（現在の価格：${concept.initialPrice}円 ➡ 最終目標価格：${concept.targetPrice}円）
 ---
 
 # 【実践編】マニュアル本編
@@ -283,10 +258,27 @@ ${structure.paid_action || '（アクションプラン未入力）'}
 ## ご購入者特典
 ${structure.paid_bonus || '（特典未入力）'}
 
+---
 最後までお読みいただきありがとうございました。
 よろしければ、SNS等で感想をシェアしていただけると嬉しいです！
+
+【ご質問・サポート窓口】
+実践する中でわからないことがあれば、以下の専用LINEまでお気軽にご相談ください。
+▶ ${concept.lineUrl || '（※未設定）'}
 `;
       };
+
+      // マニュアル初期化・置換ロジック
+      const initializeManual = () => {
+        let content = manual.content || `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] 以下の『${project.name || 'カタログサイト'}』をお客様と一緒に見ながら説明します。\n  ▶ ${project.url || '[URL未設定]'}\n・ [手順2] \n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ ${concept.lineUrl || '[LINE未設定]'}`;
+        return content;
+      };
+
+      const initializeContract = () => {
+        let content = contract.content || `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、以下の通り共創パートナー基本契約を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを乙が紹介・提案し、利用契約を斡旋する業務について定める。\n\n第2条（対象サービス）\n本契約の対象となるサービスは「${project.name || '（対象サービス名）'}」および関連サービス全般とする。\n\n第3条（本業務の遂行）\n乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、サービスの改善に協力するよう努めるものとする。`;
+        return content;
+      };
+
 
       return (
         <div className={theme === 'dark' ? 'dark' : ''}>
@@ -311,6 +303,7 @@ ${structure.paid_bonus || '（特典未入力）'}
               </div>
               
               <nav className="flex flex-col gap-1.5 overflow-y-auto pb-4">
+                <SidebarItem icon={<Settings className="w-5 h-5"/>} label="0. プロジェクト設定" active={activeTab === 'project'} onClick={() => setActiveTab('project')} />
                 <SidebarItem icon={<Target className="w-5 h-5"/>} label="1. 変化設計" active={activeTab === 'concept'} onClick={() => setActiveTab('concept')} />
                 <SidebarItem icon={<LayoutTemplate className="w-5 h-5"/>} label="2. 記事構成作成" active={activeTab === 'structure'} onClick={() => setActiveTab('structure')} />
                 <SidebarItem icon={<Coins className="w-5 h-5"/>} label="3. 副産物設計" active={activeTab === 'monetization'} onClick={() => setActiveTab('monetization')} />
@@ -319,7 +312,7 @@ ${structure.paid_bonus || '（特典未入力）'}
                 <div className="my-2 border-t border-slate-200 dark:border-slate-700"></div>
                 
                 <SidebarItem icon={<FileText className="w-5 h-5"/>} label="5. note下書き出力" active={activeTab === 'export'} onClick={() => setActiveTab('export')} />
-                <SidebarItem icon={<BookType className="w-5 h-5"/>} label="6. 特典マニュアル" active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} isHighlight={true} />
+                <SidebarItem icon={<BookType className="w-5 h-5"/>} label="6. 特典マニュアル" active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} />
                 <SidebarItem icon={<Handshake className="w-5 h-5"/>} label="7. 共創パートナー契約" active={activeTab === 'contract'} onClick={() => setActiveTab('contract')} />
               </nav>
             </div>
@@ -344,12 +337,66 @@ ${structure.paid_bonus || '（特典未入力）'}
               <div className="flex-1 p-8 overflow-y-auto">
                 <div className="max-w-4xl mx-auto pb-12">
                   
+                  {/* 新設：プロジェクト設定タブ */}
+                  {activeTab === 'project' && (
+                    <div className="space-y-6 animate-in">
+                      <div className="mb-6">
+                        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                          <Settings className="text-indigo-600 dark:text-indigo-400" />
+                          Step 0. プロジェクト基本設定
+                        </h2>
+                        <p className="text-slate-500 dark:text-slate-400">あなたがこれから展開したい商材（アプリ）の基本情報を入力してください。<br/>ここに入力した情報が、後続の設計シートやマニュアルに自動で反映されます。</p>
+                      </div>
+
+                      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                        <EditorField 
+                          label="展開する商材・アプリ名" 
+                          name="name" 
+                          value={project.name} 
+                          onChange={handleChange(setProject)} 
+                          placeholder="例：採用みっけ" 
+                        />
+                        <EditorField 
+                          label="アプリ（またはカタログ）のURL" 
+                          name="url" 
+                          value={project.url} 
+                          onChange={handleChange(setProject)} 
+                          placeholder="例：https://spc-jp.github.io/mikke-catalog/#saiyou" 
+                        />
+                        <EditorField 
+                          label="アプリの概要・強み" 
+                          name="description" 
+                          value={project.description} 
+                          onChange={handleChange(setProject)} 
+                          placeholder="例：求人サイトに頼らず、自社の魅力をAIが分析して最適な採用ページを自動生成するシステム。" 
+                          rows={3}
+                        />
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <EditorField 
+                            label="代理店になってもらいたいターゲット層（誰にこのビジネスを教えるか？）" 
+                            name="target" 
+                            value={project.target} 
+                            onChange={handleChange(setProject)} 
+                            placeholder="例：地方の中小企業向けコンサルタントや社労士。顧問先に採用力強化ツールとして提案して副収入を得たい人。" 
+                            rows={3}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end mt-6">
+                        <button onClick={() => { showNotification('基本情報を設定しました', 'success'); setActiveTab('concept'); }} className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md">
+                          設計ワークシートへ進む <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {activeTab === 'concept' && (
                     <div className="space-y-6 animate-in">
                       <h2 className="text-2xl font-bold mb-2">変化設計ワークシート</h2>
                       <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-                        <EditorField label="ターゲット（誰に向けて？）" name="target" value={concept.target} onChange={handleChange(setConcept)} placeholder="例：本業が忙しいがnoteで収益化したい人" />
-                        <EditorField label="読者の悩み" name="pain" value={concept.pain} onChange={handleChange(setConcept)} placeholder="例：低額記事を量産しているが月数千円しか稼げず疲弊している" rows={3} />
+                        <EditorField label="ターゲット（誰に向けて？）" name="target" value={concept.target} onChange={handleChange(setConcept)} placeholder="Step0の入力内容が引き継がれます" />
+                        <EditorField label="読者の悩み" name="pain" value={concept.pain} onChange={handleChange(setConcept)} placeholder="例：顧問先から採用の相談を受けるが、具体的なITツールを持っておらず単価が上げられない" rows={3} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 items-center">
                           <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
                             <EditorField label="Before（読む前）" name="before" value={concept.before} onChange={handleChange(setConcept)} placeholder="現在のダメな状態" rows={4} />
@@ -375,7 +422,14 @@ ${structure.paid_bonus || '（特典未入力）'}
                             <EditorField label="2. 冒頭文" name="free_intro" value={structure.free_intro} onChange={handleChange(setStructure)} rows={3} />
                             <EditorField label="3. 悩みへの共感" name="free_pain" value={structure.free_pain} onChange={handleChange(setStructure)} rows={3} />
                             <EditorField label="4. 解決策の提示" name="free_solution" value={structure.free_solution} onChange={handleChange(setStructure)} rows={3} />
-                            <EditorField label="5. 自己紹介・実績" name="free_profile" value={structure.free_profile} onChange={handleChange(setStructure)} rows={2} />
+                            
+                            <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 space-y-3">
+                              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">5. 自己紹介・実績（ストーリー）</label>
+                              <EditorField label="【過去の失敗・絶望】" name="free_profile_past" value={structure.free_profile_past} onChange={handleChange(setStructure)} rows={2} />
+                              <EditorField label="【転機・気づき】" name="free_profile_encounter" value={structure.free_profile_encounter} onChange={handleChange(setStructure)} rows={2} />
+                              <EditorField label="【現在の成功・実績】" name="free_profile_current" value={structure.free_profile_current} onChange={handleChange(setStructure)} rows={2} />
+                            </div>
+
                             <EditorField label="6. CTA（今買うべき理由）" name="free_cta" value={structure.free_cta} onChange={handleChange(setStructure)} rows={2} />
                           </div>
                         </div>
@@ -398,17 +452,32 @@ ${structure.paid_bonus || '（特典未入力）'}
                     <div className="space-y-6 animate-in">
                       <h2 className="text-2xl font-bold mb-2">価格設定 ＆ 副産物設計</h2>
                       <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <h3 className="font-bold text-lg mb-4">note記事の価格設定（入口）</h3>
+                        <h3 className="font-bold text-lg mb-4 text-indigo-700 dark:text-indigo-400 border-b border-slate-200 dark:border-slate-700 pb-2">note記事の価格設定（ロードマップ）</h3>
+                        
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold">価格:</span>
-                            <input type="number" name="price" value={concept.price} onChange={handleChange(setConcept)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-transparent text-right font-bold" />
-                            <span className="font-bold">円</span>
+                          <div>
+                            <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">初期リリース価格</label>
+                            <div className="flex items-center gap-2">
+                              <input type="number" name="initialPrice" value={concept.initialPrice} onChange={handleChange(setConcept)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-transparent text-right font-bold focus:ring-2 focus:ring-blue-500 outline-none" />
+                              <span className="font-bold">円</span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold">目標月間販売数:</span>
-                            <input type="number" name="salesTarget" value={concept.salesTarget} onChange={handleChange(setConcept)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-transparent text-right font-bold" />
-                            <span className="font-bold">部</span>
+                          <div>
+                            <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">最終目標価格</label>
+                            <div className="flex items-center gap-2">
+                              <input type="number" name="targetPrice" value={concept.targetPrice} onChange={handleChange(setConcept)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-transparent text-right font-bold text-indigo-600 dark:text-indigo-400 focus:ring-2 focus:ring-blue-500 outline-none" />
+                              <span className="font-bold">円</span>
+                            </div>
+                          </div>
+                          <div className="md:col-span-2">
+                            <EditorField label="値上げの条件（メモ）" name="priceCondition" value={concept.priceCondition} onChange={handleChange(setConcept)} rows={2} />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">目標月間販売数（目標価格達成時）</label>
+                            <div className="flex items-center gap-2">
+                              <input type="number" name="salesTarget" value={concept.salesTarget} onChange={handleChange(setConcept)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-transparent text-right font-bold focus:ring-2 focus:ring-blue-500 outline-none" />
+                              <span className="font-bold">部</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -429,9 +498,9 @@ ${structure.paid_bonus || '（特典未入力）'}
                           ))}
                         </div>
                         <div className="mt-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4 rounded-lg">
-                          <p className="font-bold text-emerald-800 dark:text-emerald-400 mb-2">推定総合月間収益</p>
+                          <p className="font-bold text-emerald-800 dark:text-emerald-400 mb-2">最終目標達成時の推定月間収益</p>
                           <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                            {((concept.price * concept.salesTarget) + (concept.salesTarget * 0.3 * products.reduce((sum, p) => sum + Number(p.reward || 0), 0))).toLocaleString()} <span className="text-lg">円</span>
+                            {((concept.targetPrice * concept.salesTarget) + (concept.salesTarget * 0.3 * products.reduce((sum, p) => sum + Number(p.reward || 0), 0))).toLocaleString()} <span className="text-lg">円</span>
                           </div>
                         </div>
                       </div>
@@ -442,12 +511,24 @@ ${structure.paid_bonus || '（特典未入力）'}
                   {activeTab === 'routing' && (
                     <div className="space-y-6 animate-in">
                       <h2 className="text-2xl font-bold mb-2">導線設計チェックリスト</h2>
+                      
+                      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-6">
+                        <h3 className="font-bold text-lg mb-4 text-indigo-700 dark:text-indigo-400 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                          <LinkIcon className="w-5 h-5" /> サポート窓口 ＆ ツールURL設定
+                        </h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">ここで設定したURLが、自動的にnoteの下書きや代理店マニュアルに挿入されます。</p>
+                        <div className="space-y-4">
+                          <EditorField label="公式LINE URL（リスト取り・サポート用）" name="lineUrl" value={concept.lineUrl} onChange={handleChange(setConcept)} placeholder="https://lin.ee/..." />
+                        </div>
+                      </div>
+
                       <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <h3 className="font-bold text-lg mb-4">購入までの導線</h3>
                         <div className="space-y-3">
                           <CheckItem checked={checklist.profile} onChange={() => toggleCheck('profile')} label="プロフィール文に実績・ターゲットが入っている" />
                           <CheckItem checked={checklist.freePartCTA} onChange={() => toggleCheck('freePartCTA')} label="SNSの固定ツイート等にnoteへのリンクがある" />
                           <CheckItem checked={checklist.actionPlan} onChange={() => toggleCheck('actionPlan')} label="有料記事の最後に読者に行動させるアクションプランがある" />
+                          <CheckItem checked={checklist.setupLine} onChange={() => toggleCheck('setupLine')} label="公式LINEを設置し、購入後のサポート体制（リスト取り）ができている" />
                         </div>
                       </div>
                       <div className="flex justify-end mt-6">
@@ -516,7 +597,7 @@ ${structure.paid_bonus || '（特典未入力）'}
                           <input 
                             type="text" 
                             name="title"
-                            value={manual.title}
+                            value={manual.title || `【完全版】${project.name || '〇〇'} 代理店営業マニュアル`}
                             onChange={handleChange(setManual)}
                             placeholder="マニュアルのタイトルを入力"
                             className="w-full text-2xl md:text-3xl font-bold text-center mb-8 border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none text-slate-800 bg-transparent transition-colors"
@@ -524,8 +605,8 @@ ${structure.paid_bonus || '（特典未入力）'}
                           <textarea
                             ref={manualTextRef}
                             name="content"
-                            value={manual.content}
-                            onChange={handleChange(setManual)}
+                            value={initializeManual()}
+                            onChange={(e) => setManual({...manual, content: e.target.value})}
                             placeholder="ここにマニュアルの本文、提案スクリプト、ターゲットなどを記述します。"
                             className="w-full h-[850px] text-base leading-relaxed text-slate-800 outline-none resize-none bg-transparent"
                           />
@@ -548,13 +629,9 @@ ${structure.paid_bonus || '（特典未入力）'}
                       <div className="flex justify-between items-end mb-4">
                         <div>
                           <h2 className="text-2xl font-bold mb-2">共創パートナー契約書 (自動生成)</h2>
-                          <p className="text-slate-500 dark:text-slate-400">
-                            「代理店」ではなく「共創パートナー」として契約を結ぶためのひな形です。<br/>
-                            ※「みっけシリーズ」全体を包括できる内容になっています。
-                          </p>
                         </div>
                         <button 
-                          onClick={() => handleCopy(contractTextRef, '契約書をコピーしました！Wordやクラウドサイン等に貼り付けてご活用ください')}
+                          onClick={() => handleCopy(contractTextRef, '契約書をコピーしました！')}
                           className="bg-amber-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-amber-700 transition shadow-md"
                         >
                           <Copy className="w-4 h-4" /> Word用にコピー
@@ -566,32 +643,18 @@ ${structure.paid_bonus || '（特典未入力）'}
                           <input 
                             type="text" 
                             name="title"
-                            value={contract.title}
+                            value={contract.title || '共創パートナー基本契約書'}
                             onChange={handleChange(setContract)}
-                            placeholder="契約書のタイトルを入力"
                             className="w-full text-2xl font-bold text-center mb-8 border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none text-slate-800 bg-transparent transition-colors"
                           />
                           <textarea
                             ref={contractTextRef}
                             name="content"
-                            value={contract.content}
-                            onChange={handleChange(setContract)}
-                            placeholder="ここに契約書の本文を記述します。"
+                            value={initializeContract()}
+                            onChange={(e) => setContract({...contract, content: e.target.value})}
                             className="w-full h-[800px] text-sm leading-relaxed text-slate-800 outline-none resize-none bg-transparent"
                           />
                         </div>
-                      </div>
-                      
-                      <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800 mt-6">
-                        <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2 flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5" />
-                          契約書のポイント
-                        </h4>
-                        <ul className="list-disc list-inside text-sm text-amber-700 dark:text-amber-300 space-y-1">
-                          <li><strong>「第2条（対象サービス）」</strong>で「みっけシリーズ全般」を対象としており、今後新しいアプリが追加された際にも、わざわざ契約を結び直す手間が省けます。</li>
-                          <li><strong>「第3条3項」</strong>に「下請けではなく共創パートナーである」旨を記載し、対等な関係性とモチベーションアップを図っています。</li>
-                          <li>コピー後、WordでPDF化してnoteの特典にするか、クラウドサイン等の電子契約サービスにコピペして使用してください。</li>
-                        </ul>
                       </div>
                     </div>
                   )}
@@ -652,7 +715,7 @@ ${structure.paid_bonus || '（特典未入力）'}
       return (
         <div className="flex justify-end mt-6">
           <button onClick={onClick} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-md">
-            <Save className="w-4 h-4" /> 保存して次へ
+            保存して次へ <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       );
