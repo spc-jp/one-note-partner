@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>one-note-partner 〜1記事フランチャイズ構築ツール〜</title>
 
-  <!-- ファビコンの読み込み -->
   <link rel="icon" href="https://spc-jp.github.io/one-note-partner/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="https://spc-jp.github.io/one-note-partner/favicon.png" />
 
@@ -21,7 +20,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <!-- Babel の読み込み (ブラウザ内でJSXを変換) -->
+  <!-- Babel の読み込み -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- カスタムスタイル -->
@@ -60,7 +59,6 @@
     const Trash2 = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>;
     const Moon = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
     const Sun = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
-    const PlaySquare = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><polygon points="10 8 16 12 10 16 10 8"/></svg>;
     const RotateCcw = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
     const Check = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
     const FileText = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>;
@@ -69,13 +67,15 @@
     const Handshake = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3-6 6"/><path d="m21 16-1.85 1.85a1.5 1.5 0 0 1-2.12 0l-2.83-2.83a1.5 1.5 0 0 1 0-2.12L16 11"/><path d="m3 3 6 6"/><path d="m3 21 1.85-1.85a1.5 1.5 0 0 1 2.12 0l2.83 2.83a1.5 1.5 0 0 1 0 2.12L8 21"/></svg>;
     const LinkIcon = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
     const Settings = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
+    const Sparkles = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M7 5H3"/><path d="M21 17v4"/><path d="M23 19h-4"/></svg>;
+    const Loader2 = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" x2="12" y1="2" y2="6"/><line x1="12" x2="12" y1="18" y2="22"/><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"/><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"/><line x1="2" x2="6" y1="12" y2="12"/><line x1="18" x2="22" y1="12" y2="12"/><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"/><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"/></svg>;
 
     // ==========================================
     // データ初期値
     // ==========================================
     const BLANK_DATA = {
       project: { name: '', url: '', description: '', target: '' },
-      concept: { target: '', pain: '', before: '', after: '', initialPrice: 1000, targetPrice: 10000, priceCondition: '', salesTarget: 10, lineUrl: '', catalogUrl: '' },
+      concept: { target: '', pain: '', before: '', after: '', initialPrice: 4980, targetPrice: 29800, priceCondition: '', salesTarget: 5, lineUrl: '', catalogUrl: '' },
       structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile_past: '', free_profile_encounter: '', free_profile_current: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
       products: [],
       checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false, setupLine: false },
@@ -83,52 +83,89 @@
       contract: { title: '', content: '' }
     };
 
-    const DEMO_DATA = {
-      project: { 
-        name: 'たびみっけ', 
-        url: 'https://tabi-mikke.pages.dev/', 
-        description: '写真1枚でその場所の歴史と物語が動き出す、多言語対応のAIトラベルガイド。', 
-        target: 'インバウンド対応に悩む小規模な民泊や旅館のオーナー。またはそれを提案したい代理店。' 
-      },
-      concept: {
-        target: 'インバウンド特需で稼ぎたいが、自社商品や店舗を持たない副業・新規事業希望者',
-        pain: 'インバウンドの波に乗りたいが、語学力も資金もない。単発の仕事ではなく、毎月安定したストック収入が欲しい。',
-        before: 'インバウンドで儲かっているニュースを見ながら「何かできないか」と悩むだけで、具体的な一歩を踏み出せていない状態',
-        after: '「たびみっけ」を地域の民泊や旅館に提案するだけで、多言語対応の課題を解決して感謝されながら、毎月のストック報酬を得ている状態',
-        initialPrice: 2980,
-        targetPrice: 15000,
-        priceCondition: '最初の3名が代理店として活動開始したら4,980円へ値上げ。その後、よくある質問と営業ノウハウを追記して最終的に15,000円にする。',
-        salesTarget: 10,
-        lineUrl: 'https://lin.ee/xxxxx（あなたの公式LINE）',
-        catalogUrl: 'https://spc-jp.github.io/mikke-catalog/'
-      },
-      structure: {
-        free_title: '【インバウンド特需に乗る】語学力・店舗ゼロから毎月の継続報酬を積み上げる「たびみっけ」代理店マニュアル',
-        free_intro: '「インバウンドで儲かっているニュースを見るたび、自分も何かできないかと思う…」\nでも、語学力も資金もない。そんなあなたへ。本記事では、写真1枚で3言語対応のAIガイドができる『たびみっけ』を代理販売し、継続収益を得る仕組みを完全公開します。',
-        free_pain: '・インバウンドビジネスを始めたいが初期費用がない\n・英語や中国語が話せないからムリだと諦めている\n・単発の労働ではなく、毎月のストック収入が欲しい',
-        free_solution: 'この記事の「提案スクリプト」を民泊オーナーや地域の飲食店に送るだけで、彼らの「多言語対応の悩み」を解決し、あなたには毎月の代理店報酬が入り続けます。',
-        free_profile_past: '以前の私は、色々な副業に手を出しましたが自分に売れる商品がなく、単発の仕事ばかりで全く稼げず絶望していました。',
-        free_profile_encounter: 'そんな時、「たびみっけ」をはじめとする「みっけシリーズ」に出会いました。「自分で作らなくても、この素晴らしいアプリを困っている人に紹介するだけで良い」と気づいたのです。',
-        free_profile_current: '今では語学力ゼロから「たびみっけ」の代理店として活動し、地域の宿泊施設に喜ばれながら毎月安定したストック収益を上げています。その提案の型をすべて公開します。',
-        free_cta: '本記事のノウハウは、飽和を防ぐため一定部数販売ごとに値上げします。最も安く手に入る「今」、先行者利益を掴んでください。',
-        paid_intro: 'ご購入ありがとうございます。ここからが実践編です。まずは「たびみっけ」の威力を体験し、すぐに提案できるよう準備しましょう。',
-        paid_main: '第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\n第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n第4章：成約率を倍増させる、スマホを使ったデモの見せ方',
-        paid_pitfall: '💡よくある失敗：機能（AIや3言語対応）ばかりを説明すること。「スタッフの案内業務が減る」「外国人客の満足度が上がり高評価レビューが増える」という未来を語りましょう。',
-        paid_action: '読み終わったら、まずはGoogleマップで地元の「民泊」を検索し、第3章のDMテンプレートを3件送ってみましょう。',
-        paid_bonus: 'ご購入者特典：そのまま印刷して営業先で配れる「たびみっけ紹介用チラシ（PDF）」と「共創パートナー契約書ひな形」をダウンロードできます。'
-      },
-      products: [
-        { id: 1, name: 'たびみっけ 月額利用料（継続代理店報酬）', type: '直接提携', reward: 5000 },
-        { id: 2, name: '初期設定・現地写真撮影サポート代行', type: '自社商品・コンサル', reward: 30000 }
-      ],
-      checklist: { profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true },
-      manual: {
-        title: '【完全版】たびみっけ 代理店営業マニュアル＆提案スクリプト',
-        content: `【はじめに】\n本マニュアルは、note本編で解説した内容を元に、「たびみっけ」を宿泊施設へ提案し、成約を獲得するための実践的な手順です。\n各章のステップに沿って、一つずつ行動を進めてください。\n\n■ 第1章：なぜ今「たびみっけ」が宿や店に爆売れするのか\nまずは提案する相手と、伝えるべき「メリット」を整理します。\n\n・ 狙うべき施設とその理由\n  - 民泊・ゲストハウス、小規模な旅館やホテル\n  - 理由：インバウンド客は増えているが、多言語を話せるスタッフを雇う資金的余裕がないため。\n・ 提案の切り口（機能ではなく未来を語る）\n  - 【NG】「AIを使って3言語に対応したガイドアプリです」\n  - 【OK】「外国人のお客様にスマホをかざしてもらうだけで自動で案内できるので、スタッフさんの対応時間が実質ゼロになります」\n\n■ 第2章：Googleマップを使った見込み客（民泊・旅館）の探し方\n営業先はスマホ1台で簡単に見つかります。\n\n・ [手順1] Googleマップを開き「地域名＋民泊」または「地域名＋ゲストハウス」で検索する。\n・ [手順2] 外国人観光客の口コミ（英語や中国語など）が多くついている施設をピックアップする。\n・ [手順3] その施設の公式サイトやSNS（Instagram等）から、問い合わせ用のメールアドレスやDM窓口を取得する。\n\n■ 第3章：コピペでOK！オーナーの心を動かす魔法のDMテンプレート\n以下のテキストをコピーして、第2章で集めた連絡先に送信してください。\n\n・ 件名：\n  外国人ゲストへの周辺案内、多言語対応でお困りではありませんか？\n\n・ 本文：\n  〇〇（施設名）のオーナー様\n  突然のご連絡失礼いたします。地域でインバウンド支援を行っております〇〇と申します。\n\n  現在、多くの宿泊施設様から「外国人ゲストに近隣のおすすめスポットを聞かれるが、多言語での案内が難しくスタッフの負担になっている」というお悩みを伺っております。\n\n  そこで、施設内に「1枚の写真を置くだけ」で、ゲストのスマホで自動的に周辺の多言語AIガイドが起動する『たびみっけ』というサービスをご案内しております。\n\n  初期費用〇〇円、月額〇〇円で、スタッフ様の案内対応時間を劇的に削減し、ゲストの満足度（レビュー評価）を向上させることが可能です。\n  もしご興味がございましたら、10分ほどオンラインで実際のデモ画面をお見せできればと存じますが、いかがでしょうか？\n\n■ 第4章：成約率を倍増させる、スマホを使ったデモの見せ方\n返信が来たら、以下の手順で成約まで進めます。\n\n・ [手順1] オンライン商談（Zoom等）、または対面にて、以下の『みっけカタログサイト』をお客様と一緒に見ながら説明します。\n  ▶ [カタログサイトURL：自動挿入設定箇所]\n・ [手順2] カタログのデモ画面を開き、「お客様がQRを読み込むと、このようにご自身の言語で表示されます」と実際に操作してみせる。\n・ [手順3] その場で申込書の記入・回収を行い、施設周辺の「おすすめスポット」をヒアリングする。\n・ [手順4] システムへ写真・データを登録し、施設へ「QRコード付き写真パネル」を納品・設置して完了！\n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合や、お客様からの質問で分からないことがあれば、いつでも専用LINEにご相談ください。\n▶ [サポートLINE URL：自動挿入設定箇所]`
-      },
-      contract: {
-        title: '共創パートナー基本契約書',
-        content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「みっけシリーズ（たびみっけ等）」のサービス全般とする。（※今後追加される新サービスについても、原則として本契約の対象に含むものとする。ただし、個別のサービスごとに報酬等の条件が異なる場合は、別途覚書にて定める）\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以後も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
+    // ==========================================
+    // Gemini API 呼び出し処理
+    // ==========================================
+    const apiKey = ""; // 実行環境から提供されます
+
+    const fetchWithRetry = async (url, options, maxRetries = 5) => {
+      let retries = 0;
+      const delays = [1000, 2000, 4000, 8000, 16000];
+      while (retries < maxRetries) {
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+          }
+          return await response.json();
+        } catch (error) {
+          if (retries === maxRetries - 1) throw error;
+          await new Promise(resolve => setTimeout(resolve, delays[retries]));
+          retries++;
+        }
+      }
+    };
+
+    const JSON_SCHEMA = {
+      type: "OBJECT",
+      properties: {
+        concept: {
+          type: "OBJECT",
+          properties: {
+            target: { type: "STRING" },
+            pain: { type: "STRING" },
+            before: { type: "STRING" },
+            after: { type: "STRING" },
+            initialPrice: { type: "NUMBER" },
+            targetPrice: { type: "NUMBER" },
+            priceCondition: { type: "STRING" },
+            salesTarget: { type: "NUMBER" }
+          }
+        },
+        structure: {
+          type: "OBJECT",
+          properties: {
+            free_title: { type: "STRING" },
+            free_intro: { type: "STRING" },
+            free_pain: { type: "STRING" },
+            free_solution: { type: "STRING" },
+            free_profile_past: { type: "STRING" },
+            free_profile_encounter: { type: "STRING" },
+            free_profile_current: { type: "STRING" },
+            free_cta: { type: "STRING" },
+            paid_intro: { type: "STRING" },
+            paid_main: { type: "STRING" },
+            paid_pitfall: { type: "STRING" },
+            paid_action: { type: "STRING" },
+            paid_bonus: { type: "STRING" }
+          }
+        },
+        products: {
+          type: "ARRAY",
+          items: {
+            type: "OBJECT",
+            properties: {
+              name: { type: "STRING" },
+              type: { type: "STRING" },
+              reward: { type: "NUMBER" }
+            }
+          }
+        },
+        manual: {
+          type: "OBJECT",
+          properties: {
+            title: { type: "STRING" },
+            content: { type: "STRING", description: "マニュアルの本文。見出しや手順を箇条書きで分かりやすく記述すること。" }
+          }
+        },
+        contract: {
+          type: "OBJECT",
+          properties: {
+            title: { type: "STRING" },
+            content: { type: "STRING", description: "共創パートナー契約書の本文。" }
+          }
+        }
       }
     };
 
@@ -139,6 +176,7 @@
       const [activeTab, setActiveTab] = useState('project');
       const [theme, setTheme] = useState('light');
       const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+      const [isLoading, setIsLoading] = useState(false);
       
       const [project, setProject] = useState(BLANK_DATA.project);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
@@ -152,29 +190,9 @@
       const manualTextRef = useRef(null);
       const contractTextRef = useRef(null);
 
-      // プロジェクト設定から他タブへの自動連携ロジック
-      useEffect(() => {
-        // 新規作成時など、ターゲットが空なら自動で引き継ぐ
-        if (!concept.target && project.target) {
-          setConcept(prev => ({ ...prev, target: project.target }));
-        }
-      }, [project.target]);
-
       const showNotification = (message, type) => {
         setNotification({ show: true, message, type });
         setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
-      };
-
-      const loadDemoData = () => {
-        setProject(DEMO_DATA.project);
-        setConcept(DEMO_DATA.concept);
-        setStructure(DEMO_DATA.structure);
-        setProducts(DEMO_DATA.products);
-        setChecklist(DEMO_DATA.checklist);
-        setManual(DEMO_DATA.manual);
-        setContract(DEMO_DATA.contract);
-        showNotification('デモデータ（たびみっけ版）を読み込みました', 'success');
-        setActiveTab('project');
       };
 
       const clearData = () => {
@@ -222,7 +240,71 @@
         }
       };
 
-      // 出力テキスト生成（プロジェクト設定の変数を活用）
+      // AI自動生成メソッド
+      const generateWithAI = async () => {
+        if (!project.name || !project.target) {
+          showNotification('「アプリ名」と「ターゲット層」を入力してください。', 'error');
+          return;
+        }
+
+        setIsLoading(true);
+        try {
+          const prompt = `あなたは「1記事ノート戦略」のプロフェッショナルなコンサルタントです。
+以下の商材（アプリ）情報を基に、代理店（共創パートナー）を集めるための売れるnote記事構成、価格設計、副産物（代理店が現場で売るバックエンド商品）、営業マニュアル、契約書を全自動で設計してください。
+
+【商材情報】
+・アプリ名：${project.name}
+・URL：${project.url || '未定'}
+・概要：${project.description || '未定'}
+・ターゲット：${project.target}
+
+【指示】
+1. ターゲットの痛烈な悩み（Before）と、導入後の成功体験（After）を明確にすること。
+2. noteの無料パートは、機能ではなく「読者の悩み解決と未来」を語る強力なセールスレター構成にすること。
+3. 代理店が現場で販売した際に発生する「副産物（継続報酬や導入サポート等）」を1〜2つ考案すること。
+4. 代理店が現場で使う「実践マニュアル」は、箇条書きやステップ形式を用いてすぐに使える実践的な内容にすること。
+5. 「共創パートナー契約書」は、汎用的で法的に問題ないひな形を作成すること。
+必ず指定されたJSONスキーマに従って出力してください。`;
+
+          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: JSON_SCHEMA
+              }
+            })
+          });
+
+          const generatedText = response.candidates[0].content.parts[0].text;
+          const data = JSON.parse(generatedText);
+
+          // Stateの更新（既存のURL設定などは残す）
+          setConcept(prev => ({ 
+            ...data.concept, 
+            lineUrl: prev.lineUrl, 
+            catalogUrl: project.url || prev.catalogUrl 
+          }));
+          setStructure(data.structure);
+          // 製品の配列にidを付与
+          setProducts(data.products ? data.products.map((p, i) => ({ ...p, id: Date.now() + i })) : []);
+          setManual(data.manual);
+          setContract(data.contract);
+          setChecklist({ profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true });
+
+          showNotification('AIによる全自動設計が完了しました！', 'success');
+          setActiveTab('concept'); // 完了後に変化設計タブへ移動
+
+        } catch (error) {
+          console.error(error);
+          showNotification('AIの生成に失敗しました。少し待って再実行してください。', 'error');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       const generateExportText = () => {
         return `# ${structure.free_title || `【完全版】${project.name || '〇〇'} 代理店マニュアル`}
 
@@ -274,14 +356,12 @@ ${structure.paid_bonus || '（特典未入力）'}
 `;
       };
 
-      // マニュアル初期化・置換ロジック
       const initializeManual = () => {
         let content = manual.content || `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] 以下の『${project.name || 'カタログサイト'}』をお客様と一緒に見ながら説明します。\n  ▶ ${concept.catalogUrl || project.url || '[URL未設定]'}\n・ [手順2] \n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ ${concept.lineUrl || '[LINE未設定]'}`;
         
-        // デモデータの場合は置換処理を行う
         if (manual.content && manual.content.includes('自動挿入設定箇所')) {
-            content = content.replace('[カタログサイトURL：自動挿入設定箇所]', concept.catalogUrl || project.url || '（※導線設計タブでカタログのURLを設定してください）');
-            content = content.replace('[サポートLINE URL：自動挿入設定箇所]', concept.lineUrl || '（※導線設計タブでLINEのURLを設定してください）');
+            content = content.replace(/\[カタログサイトURL：自動挿入設定箇所\]/g, concept.catalogUrl || project.url || '（※導線設計タブでカタログのURLを設定してください）');
+            content = content.replace(/\[サポートLINE URL：自動挿入設定箇所\]/g, concept.lineUrl || '（※導線設計タブでLINEのURLを設定してください）');
         }
         return content;
       };
@@ -291,15 +371,29 @@ ${structure.paid_bonus || '（特典未入力）'}
         return content;
       };
 
-
       return (
         <div className={theme === 'dark' ? 'dark' : ''}>
-          <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300">
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300 relative">
             
+            {/* ローディングオーバーレイ */}
+            {isLoading && (
+              <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-in">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center">
+                  <div className="relative">
+                    <Loader2 className="w-12 h-12 text-indigo-600 dark:text-indigo-400 animate-spin mb-4" />
+                    <Sparkles className="w-6 h-6 text-amber-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  </div>
+                  <p className="font-bold text-lg text-slate-800 dark:text-white">AIが平川式メソッドで設計中...</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">10秒〜20秒ほどかかります</p>
+                </div>
+              </div>
+            )}
+
             {notification.show && (
               <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in">
                 <div className={`px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 text-sm
                   ${notification.type === 'success' ? 'bg-green-500 text-white' : 
+                    notification.type === 'error' ? 'bg-red-500 text-white' :
                     notification.type === 'info' ? 'bg-blue-500 text-white' : 'bg-slate-800 dark:bg-white text-white dark:text-slate-800'}`}>
                   <Check className="w-4 h-4" />
                   {notification.message}
@@ -336,11 +430,8 @@ ${structure.paid_bonus || '（特典未入力）'}
               <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex justify-between items-center transition-colors shrink-0">
                 <div className="text-sm font-bold text-slate-500 dark:text-slate-400">代理店・フランチャイズ構築支援モード</div>
                 <div className="flex items-center gap-4">
-                  <button onClick={loadDemoData} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors">
-                    <PlaySquare className="w-4 h-4" /> デモデータ読込
-                  </button>
                   <button onClick={clearData} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-lg font-bold text-sm hover:bg-rose-100 transition-colors">
-                    <RotateCcw className="w-4 h-4" /> クリア
+                    <RotateCcw className="w-4 h-4" /> データをクリア
                   </button>
                   <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1"></div>
                   <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -352,7 +443,7 @@ ${structure.paid_bonus || '（特典未入力）'}
               <div className="flex-1 p-8 overflow-y-auto">
                 <div className="max-w-4xl mx-auto pb-12">
                   
-                  {/* 新設：プロジェクト設定タブ */}
+                  {/* Step 0. プロジェクト設定タブ */}
                   {activeTab === 'project' && (
                     <div className="space-y-6 animate-in">
                       <div className="mb-6">
@@ -360,7 +451,10 @@ ${structure.paid_bonus || '（特典未入力）'}
                           <Settings className="text-indigo-600 dark:text-indigo-400" />
                           Step 0. プロジェクト基本設定
                         </h2>
-                        <p className="text-slate-500 dark:text-slate-400">あなたがこれから展開したい商材（アプリ）の基本情報を入力してください。<br/>ここに入力した情報が、後続の設計シートやマニュアルに自動で反映されます。</p>
+                        <p className="text-slate-500 dark:text-slate-400">
+                          展開したい商材（アプリ）の基本情報を入力してください。<br/>
+                          入力後、<strong className="text-indigo-600 dark:text-indigo-400">「✨ AIに全自動で設計させる」</strong>ボタンを押すと、構成からマニュアルまで一瞬で完成します。
+                        </p>
                       </div>
 
                       <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
@@ -398,9 +492,16 @@ ${structure.paid_bonus || '（特典未入力）'}
                         </div>
                       </div>
                       
-                      <div className="flex justify-end mt-6">
-                        <button onClick={() => { showNotification('基本情報を設定しました', 'success'); setActiveTab('concept'); }} className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md">
-                          設計ワークシートへ進む <ArrowRight className="w-4 h-4" />
+                      {/* AI全自動ボタン */}
+                      <div className="flex justify-between items-center mt-6">
+                        <p className="text-sm text-slate-500 dark:text-slate-400">入力できたら、右のボタンでAIに任せましょう！</p>
+                        <button 
+                          onClick={generateWithAI} 
+                          disabled={isLoading}
+                          className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <Sparkles className="w-5 h-5 text-amber-300" />
+                          ✨ AIに全自動で設計させる
                         </button>
                       </div>
                     </div>
