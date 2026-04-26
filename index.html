@@ -134,12 +134,18 @@
     };
 
     // ==========================================
+    // Cloudflare Worker API設定
+    // ==========================================
+    const WORKER_URL = 'https://one-note-partner.yymmatsu.workers.dev/';
+
+    // ==========================================
     // メインアプリケーション
     // ==========================================
     function App() {
       const [activeTab, setActiveTab] = useState('project');
       const [theme, setTheme] = useState('light');
       const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+      const [isLoading, setIsLoading] = useState(false);
       
       const [project, setProject] = useState(BLANK_DATA.project);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
@@ -213,16 +219,14 @@
         if (!ref.current) return;
         const text = ref.current.value;
         try {
-          // 最新のClipboard API（HTTPS or localhost必須）
           if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(text);
             showNotification(successMsg, 'success');
             return;
           }
-          // フォールバック：旧方式（execCommand）
           ref.current.focus();
           ref.current.select();
-          ref.current.setSelectionRange(0, 99999); // モバイル対応
+          ref.current.setSelectionRange(0, 99999);
           const ok = document.execCommand('copy');
           if (ok) {
             showNotification(successMsg, 'success');
@@ -236,8 +240,63 @@
       };
 
       // ==========================================
-      // note下書きテキスト生成
+      // AI全自動設計メソッド（Cloudflare Worker経由でClaude API呼び出し）
       // ==========================================
+      const generateWithAI = async () => {
+        if (!project.name || !project.target) {
+          showNotification('「アプリ名」と「ターゲット層」を入力してください。', 'error');
+          return;
+        }
+
+        setIsLoading(true);
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ project })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // 念のためレスポンスバリデーション
+          if (!data.concept || !data.structure) {
+            throw new Error('AIからの応答が不完全です。もう一度お試しください。');
+          }
+
+          // Stateの更新
+          setConcept(prev => ({ 
+            ...data.concept, 
+            lineUrl: prev.lineUrl, 
+            catalogUrl: project.url || prev.catalogUrl 
+          }));
+          setStructure(data.structure);
+          setProducts(data.products ? data.products.map((p, i) => ({ ...p, id: Date.now() + i })) : []);
+          setManual(data.manual || { title: '', content: '' });
+          
+          // 契約書は汎用テンプレートで固定生成
+          setContract({
+             title: '共創パートナー基本契約書',
+             content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「${project.name}」および関連サービス全般とする。\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以後も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
+          });
+          
+          setChecklist({ profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true });
+
+          showNotification('🎉 AIによる全自動設計が完了しました！', 'success');
+          setActiveTab('concept'); // 完了後に変化設計タブへ移動
+
+        } catch (error) {
+          console.error(error);
+          showNotification('AIの生成に失敗しました。詳細: ' + error.message, 'error');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       const generateExportText = () => {
         return `# ${structure.free_title || `【完全版】${project.name || '〇〇'} 代理店マニュアル`}
 
@@ -308,6 +367,23 @@ ${structure.paid_bonus || '（特典未入力）'}
         <div className={theme === 'dark' ? 'dark' : ''}>
           <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300 relative">
 
+            {/* ローディングオーバーレイ */}
+            {isLoading && (
+              <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-in">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center border border-slate-200 dark:border-slate-700">
+                  <div className="relative mb-6">
+                    <Loader2 className="w-16 h-16 text-indigo-600 dark:text-indigo-400 animate-spin" />
+                    <Sparkles className="w-6 h-6 text-amber-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  </div>
+                  <h3 className="font-bold text-xl text-slate-800 dark:text-white mb-2">AIがビジネスを全自動設計中...</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+                    平川式メソッドに基づいて、<br/>構成・マニュアル・副産物を構築しています。<br/>
+                    (約10秒〜20秒かかります)
+                  </p>
+                </div>
+              </div>
+            )}
+
             {notification.show && (
               <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in">
                 <div className={`px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 text-sm
@@ -375,7 +451,7 @@ ${structure.paid_bonus || '（特典未入力）'}
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400">
                           展開したい商材（アプリ）の基本情報を入力してください。<br/>
-                          入力が終わったら、<strong className="text-indigo-600 dark:text-indigo-400">Step1から順番に</strong>埋めていけば、note記事・代理店マニュアル・契約書まで自動で完成します。
+                          入力後、下のボタンを押すだけでAIが<strong className="text-indigo-600 dark:text-indigo-400">1〜7まで全自動で構築</strong>します。
                         </p>
                       </div>
 
@@ -414,42 +490,19 @@ ${structure.paid_bonus || '（特典未入力）'}
                         </div>
                       </div>
                       
-                      {/* APIなし版：プリセット読込 or 自分で進める案内 */}
-                      <div className="bg-gradient-to-br from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6 mt-8">
-                        <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
-                          <Sparkles className="w-5 h-5 text-amber-500" />
-                          使い方は2通り
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-                            <p className="font-bold text-slate-800 dark:text-white mb-2">📦 プリセットで体験</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-                              画面右上の「プリセット読込(採用みっけ)」を押すと、サンプルデータ一式が読み込まれます。まずは完成イメージを掴みたい方におすすめです。
-                            </p>
-                          </div>
-                          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-                            <p className="font-bold text-slate-800 dark:text-white mb-2">✏️ 自分で順番に埋める</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-                              上の4項目を入力したら、下の「次へ進む」ボタンでStep1（変化設計）へ。一歩ずつ平川式メソッドで設計できます。
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-end mt-8">
+                      {/* AI全自動設計ボタン */}
+                      <div className="flex flex-col items-center justify-center mt-8">
                         <button 
-                          onClick={() => { 
-                            if (!project.name || !project.target) {
-                              showNotification('「アプリ名」と「ターゲット層」を入力してください。', 'error');
-                              return;
-                            }
-                            showNotification('Step1（変化設計）へ進みます', 'success');
-                            setActiveTab('concept'); 
-                          }}
-                          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-md"
+                          onClick={generateWithAI} 
+                          disabled={isLoading || !project.name || !project.target}
+                          className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-lg w-full md:w-auto"
                         >
-                          Step1（変化設計）へ進む <ArrowRight className="w-5 h-5" />
+                          <Sparkles className="w-6 h-6 text-amber-300" />
+                          ✨ AIに全自動で設計させる
                         </button>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">
+                          ※「アプリ名」と「ターゲット層」の入力が必須です。約10秒ほどかかります。
+                        </p>
                       </div>
                     </div>
                   )}
