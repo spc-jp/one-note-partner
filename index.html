@@ -178,7 +178,7 @@
         setChecklist(DEMO_DATA.checklist);
         setManual(DEMO_DATA.manual);
         setContract(DEMO_DATA.contract);
-        showNotification('プリセットデモデータ（採用みっけ版）を読み込みました！', 'success');
+        showNotification('デモデータ（採用みっけ版）を読み込みました！', 'success');
         setActiveTab('project');
       };
 
@@ -426,10 +426,10 @@ ${structure.paid_bonus || '（特典未入力）'}
                 <div className="text-sm font-bold text-slate-500 dark:text-slate-400">代理店・フランチャイズ構築支援モード</div>
                 <div className="flex items-center gap-4">
                   <button onClick={loadDemoData} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors shadow-sm">
-                    <PlaySquare className="w-4 h-4" /> プリセット読込(採用みっけ)
+                    <PlaySquare className="w-4 h-4" /> 📦 デモデータを見る
                   </button>
                   <button onClick={clearData} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-lg font-bold text-sm hover:bg-rose-100 transition-colors">
-                    <RotateCcw className="w-4 h-4" /> クリア
+                    <RotateCcw className="w-4 h-4" /> 🗑️ クリア
                   </button>
                   <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1"></div>
                   <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
