@@ -209,15 +209,29 @@
         setProducts(products.filter(p => p.id !== id));
       };
 
-      const handleCopy = (ref, successMsg) => {
-        if (ref.current) {
-          ref.current.select();
-          try {
-            document.execCommand('copy');
+      const handleCopy = async (ref, successMsg) => {
+        if (!ref.current) return;
+        const text = ref.current.value;
+        try {
+          // 最新のClipboard API（HTTPS or localhost必須）
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
             showNotification(successMsg, 'success');
-          } catch (err) {
-            showNotification('コピーに失敗しました。', 'error');
+            return;
           }
+          // フォールバック：旧方式（execCommand）
+          ref.current.focus();
+          ref.current.select();
+          ref.current.setSelectionRange(0, 99999); // モバイル対応
+          const ok = document.execCommand('copy');
+          if (ok) {
+            showNotification(successMsg, 'success');
+          } else {
+            showNotification('コピーできませんでした。手動で全選択(Ctrl+A)→コピー(Ctrl+C)してください。', 'error');
+          }
+        } catch (err) {
+          console.error('Copy error:', err);
+          showNotification('コピーできませんでした。手動で全選択(Ctrl+A)→コピー(Ctrl+C)してください。', 'error');
         }
       };
 
