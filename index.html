@@ -146,6 +146,7 @@
       const [theme, setTheme] = useState('light');
       const [notification, setNotification] = useState({ show: false, message: '', type: '' });
       const [isLoading, setIsLoading] = useState(false);
+      const [loadingMessage, setLoadingMessage] = useState('AIがビジネスを全自動設計中...');
       
       const [project, setProject] = useState(BLANK_DATA.project);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
@@ -240,6 +241,51 @@
       };
 
       // ==========================================
+      // ==========================================
+      // URL解析メソッド（アプリ名+URLから概要・ターゲットを自動抽出）
+      // ==========================================
+      const analyzeAppUrl = async () => {
+        if (!project.name || !project.url) {
+          showNotification('「アプリ名」と「URL」を入力してください。', 'error');
+          return;
+        }
+
+        setLoadingMessage('AIがアプリ概要とターゲットを分析中...');
+        setIsLoading(true);
+        try {
+          const response = await fetch(WORKER_URL + 'analyze-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: project.name, url: project.url })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.description || !data.target) {
+            throw new Error('AIからの応答が不完全です。もう一度お試しください。');
+          }
+
+          setProject(prev => ({
+            ...prev,
+            description: data.description,
+            target: data.target
+          }));
+
+          showNotification('✨ AIがアプリ概要とターゲットを整理しました！内容を確認・修正してから次へ進んでください', 'success');
+        } catch (error) {
+          console.error(error);
+          showNotification('AI分析に失敗しました。詳細: ' + error.message, 'error');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      // ==========================================
       // AI全自動設計メソッド（Cloudflare Worker経由でClaude API呼び出し）
       // ==========================================
       const generateWithAI = async () => {
@@ -248,6 +294,7 @@
           return;
         }
 
+        setLoadingMessage('AIがビジネスを全自動設計中...');
         setIsLoading(true);
         try {
           const response = await fetch(WORKER_URL, {
@@ -375,10 +422,10 @@ ${structure.paid_bonus || '（特典未入力）'}
                     <Loader2 className="w-16 h-16 text-indigo-600 dark:text-indigo-400 animate-spin" />
                     <Sparkles className="w-6 h-6 text-amber-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                   </div>
-                  <h3 className="font-bold text-xl text-slate-800 dark:text-white mb-2">AIがビジネスを全自動設計中...</h3>
+                  <h3 className="font-bold text-xl text-slate-800 dark:text-white mb-2">{loadingMessage}</h3>
                   <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-                    平川式メソッドに基づいて、<br/>構成・マニュアル・副産物を構築しています。<br/>
-                    (約10秒〜20秒かかります)
+                    平川式メソッドに基づいて処理しています。<br/>
+                    しばらくお待ちください（約10〜20秒）
                   </p>
                 </div>
               </div>
@@ -450,12 +497,16 @@ ${structure.paid_bonus || '（特典未入力）'}
                           Step 0. プロジェクト基本設定
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400">
-                          展開したい商材（アプリ）の基本情報を入力してください。<br/>
-                          入力後、下のボタンを押すだけでAIが<strong className="text-indigo-600 dark:text-indigo-400">1〜7まで全自動で構築</strong>します。
+                          まず<strong className="text-indigo-600 dark:text-indigo-400">アプリ名とURL</strong>を入力 → AIが概要・ターゲットを自動整理 → 確認・修正後に<strong className="text-indigo-600 dark:text-indigo-400">1〜7まで全自動構築</strong>、という流れです。
                         </p>
                       </div>
 
+                      {/* Step 0-A：アプリ名＆URL入力 + AI分析 */}
                       <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                        <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
+                          <span className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 text-xs font-bold px-2 py-1 rounded">STEP 0-A</span>
+                          <h3 className="font-bold text-lg">商材の基本情報を入力</h3>
+                        </div>
                         <EditorField 
                           label="展開する商材・アプリ名" 
                           name="name" 
@@ -470,13 +521,39 @@ ${structure.paid_bonus || '（特典未入力）'}
                           onChange={handleChange(setProject)} 
                           placeholder="例：https://spc-jp.github.io/mikke-catalog/#saiyou" 
                         />
+
+                        {/* AI分析ボタン */}
+                        <div className="flex flex-col items-center justify-center pt-2">
+                          <button 
+                            onClick={analyzeAppUrl} 
+                            disabled={isLoading || !project.name || !project.url}
+                            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-3 hover:bg-emerald-700 transition-all shadow-lg hover:shadow-emerald-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none w-full md:w-auto"
+                          >
+                            <Sparkles className="w-5 h-5 text-amber-300" />
+                            ✨ AIに概要・ターゲットを整理させる
+                          </button>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 text-center">
+                            URLを読み込んで、下の「概要」と「ターゲット」を自動で書いてくれます
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Step 0-B：概要＆ターゲット確認・修正 */}
+                      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                        <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
+                          <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded">STEP 0-B</span>
+                          <h3 className="font-bold text-lg">AI整理結果を確認・修正</h3>
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 -mt-2">
+                          ※ AIが自動入力した内容を、必要に応じて編集してください。手動で書き換えてもOKです。
+                        </p>
                         <EditorField 
                           label="アプリの概要・強み" 
                           name="description" 
                           value={project.description} 
                           onChange={handleChange(setProject)} 
-                          placeholder="例：求人サイトに頼らず、自社の魅力をAIが分析して最適な採用ページを自動生成するシステム。" 
-                          rows={3}
+                          placeholder="STEP 0-Aの「✨整理させる」ボタンを押すか、ここに直接入力してください" 
+                          rows={4}
                         />
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                           <EditorField 
@@ -484,8 +561,8 @@ ${structure.paid_bonus || '（特典未入力）'}
                             name="target" 
                             value={project.target} 
                             onChange={handleChange(setProject)} 
-                            placeholder="例：地方の中小企業向けコンサルタントや社労士。顧問先に採用力強化ツールとして提案して副収入を得たい人。" 
-                            rows={3}
+                            placeholder="STEP 0-Aの「✨整理させる」ボタンを押すか、ここに直接入力してください" 
+                            rows={4}
                           />
                         </div>
                       </div>
@@ -498,10 +575,10 @@ ${structure.paid_bonus || '（特典未入力）'}
                           className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-lg w-full md:w-auto"
                         >
                           <Sparkles className="w-6 h-6 text-amber-300" />
-                          ✨ AIに全自動で設計させる
+                          ✨ Step 1〜7まで全自動で設計させる
                         </button>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">
-                          ※「アプリ名」と「ターゲット層」の入力が必須です。約10秒ほどかかります。
+                          ※「アプリ名」と「ターゲット層」が入力済みなら押せます。約10〜20秒かかります。
                         </p>
                       </div>
                     </div>
