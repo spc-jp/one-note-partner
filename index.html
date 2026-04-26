@@ -134,92 +134,12 @@
     };
 
     // ==========================================
-    // Gemini API 呼び出し設定
-    // ==========================================
-    const apiKey = ""; // 実行環境が自動的に注入します
-
-    const fetchWithRetry = async (url, options, maxRetries = 5) => {
-      let retries = 0;
-      const delays = [1000, 2000, 4000, 8000, 16000];
-      while (retries < maxRetries) {
-        try {
-          const response = await fetch(url, options);
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
-          }
-          return await response.json();
-        } catch (error) {
-          if (retries === maxRetries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, delays[retries]));
-          retries++;
-        }
-      }
-    };
-
-    const JSON_SCHEMA = {
-      type: "OBJECT",
-      properties: {
-        concept: {
-          type: "OBJECT",
-          properties: {
-            target: { type: "STRING", description: "誰に向けて書くか（詳細なターゲット像）" },
-            pain: { type: "STRING", description: "読者の痛烈な悩み" },
-            before: { type: "STRING", description: "読む前のダメな状態" },
-            after: { type: "STRING", description: "読んだ後に得られる究極の変化" },
-            initialPrice: { type: "NUMBER", description: "初期リリース価格（円）" },
-            targetPrice: { type: "NUMBER", description: "最終目標価格（円）" },
-            priceCondition: { type: "STRING", description: "値上げの条件やロードマップのメモ" },
-            salesTarget: { type: "NUMBER", description: "目標月間販売数" }
-          }
-        },
-        structure: {
-          type: "OBJECT",
-          properties: {
-            free_title: { type: "STRING", description: "無料パートのタイトル" },
-            free_intro: { type: "STRING" },
-            free_pain: { type: "STRING" },
-            free_solution: { type: "STRING" },
-            free_profile_past: { type: "STRING" },
-            free_profile_encounter: { type: "STRING" },
-            free_profile_current: { type: "STRING" },
-            free_cta: { type: "STRING" },
-            paid_intro: { type: "STRING" },
-            paid_main: { type: "STRING", description: "有料パート本編の目次（第1章～第4章など）" },
-            paid_pitfall: { type: "STRING" },
-            paid_action: { type: "STRING" },
-            paid_bonus: { type: "STRING" }
-          }
-        },
-        products: {
-          type: "ARRAY",
-          items: {
-            type: "OBJECT",
-            properties: {
-              name: { type: "STRING", description: "副産物・バックエンド商品の名前" },
-              type: { type: "STRING", description: "「直接提携」「アフィリエイト」「自社商品・コンサル」のいずれか" },
-              reward: { type: "NUMBER", description: "1件あたりの単価（円）" }
-            }
-          }
-        },
-        manual: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            content: { type: "STRING", description: "実践マニュアルの本文。見出しや手順を箇条書きで具体的に記述すること。" }
-          }
-        }
-      }
-    };
-
-    // ==========================================
     // メインアプリケーション
     // ==========================================
     function App() {
       const [activeTab, setActiveTab] = useState('project');
       const [theme, setTheme] = useState('light');
       const [notification, setNotification] = useState({ show: false, message: '', type: '' });
-      const [isLoading, setIsLoading] = useState(false);
       
       const [project, setProject] = useState(BLANK_DATA.project);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
@@ -302,76 +222,8 @@
       };
 
       // ==========================================
-      // AI全自動設計メソッド（API直接呼び出し）
+      // note下書きテキスト生成
       // ==========================================
-      const generateWithAI = async () => {
-        if (!project.name || !project.target) {
-          showNotification('「アプリ名」と「ターゲット層」を入力してください。', 'error');
-          return;
-        }
-
-        setIsLoading(true);
-        try {
-          const prompt = `あなたは「1記事ノート戦略」のプロフェッショナルなコンサルタントです。
-以下の商材（アプリ）情報を基に、代理店（共創パートナー）を集めるための売れるnote記事構成、価格設計、副産物（代理店が現場で売るバックエンド商品）、営業マニュアルを全自動で設計してください。
-
-【商材情報】
-・アプリ名：${project.name}
-・URL：${project.url || '未定'}
-・概要：${project.description || '未定'}
-・ターゲット：${project.target}
-
-【指示】
-1. ターゲットの痛烈な悩み（Before）と、導入後の成功体験（After）を明確にすること。
-2. noteの無料パートは、機能ではなく「読者の悩み解決と未来」を語る強力なセールスレター構成にすること。
-3. 代理店が現場で販売した際に発生する「副産物（継続報酬や導入サポート等）」を1〜2つ考案すること。
-4. 代理店が現場で使う「実践マニュアル」は、箇条書きやステップ形式を用いてすぐに使える実践的な内容にすること。マニュアル内には必ず「[カタログサイトURL：自動挿入設定箇所]」と「[サポートLINE URL：自動挿入設定箇所]」という文字列を含めてください。
-必ず指定されたJSONスキーマに従って日本語で出力してください。`;
-
-          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: {
-                responseMimeType: "application/json",
-                responseSchema: JSON_SCHEMA
-              }
-            })
-          });
-
-          const generatedText = response.candidates[0].content.parts[0].text;
-          const data = JSON.parse(generatedText);
-
-          // Stateの更新
-          setConcept(prev => ({ 
-            ...data.concept, 
-            lineUrl: prev.lineUrl, 
-            catalogUrl: project.url || prev.catalogUrl 
-          }));
-          setStructure(data.structure);
-          setProducts(data.products ? data.products.map((p, i) => ({ ...p, id: Date.now() + i })) : []);
-          setManual(data.manual);
-          
-          // 契約書は汎用テンプレートで固定生成
-          setContract({
-             title: '共創パートナー基本契約書',
-             content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、以下の通り共創パートナー基本契約を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを乙が紹介・提案し、利用契約を斡旋する業務について定める。\n\n第2条（対象サービス）\n本契約の対象となるサービスは「${project.name}」および関連サービス全般とする。\n\n第3条（本業務の遂行）\n乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、サービスの改善に協力するよう努めるものとする。`
-          });
-          
-          setChecklist({ profile: true, header: true, snsLink: true, freePartCTA: true, actionPlan: true, setupLine: true });
-
-          showNotification('🎉 AIによる全自動設計が完了しました！', 'success');
-          setActiveTab('concept'); // 完了後に変化設計タブへ移動
-
-        } catch (error) {
-          console.error(error);
-          showNotification('AIの生成に失敗しました。詳細: ' + error.message, 'error');
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
       const generateExportText = () => {
         return `# ${structure.free_title || `【完全版】${project.name || '〇〇'} 代理店マニュアル`}
 
@@ -442,23 +294,6 @@ ${structure.paid_bonus || '（特典未入力）'}
         <div className={theme === 'dark' ? 'dark' : ''}>
           <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300 relative">
 
-            {/* ローディングオーバーレイ */}
-            {isLoading && (
-              <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center animate-in">
-                <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center border border-slate-200 dark:border-slate-700">
-                  <div className="relative mb-6">
-                    <Loader2 className="w-16 h-16 text-indigo-600 dark:text-indigo-400 animate-spin" />
-                    <Sparkles className="w-6 h-6 text-amber-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  </div>
-                  <h3 className="font-bold text-xl text-slate-800 dark:text-white mb-2">AIがビジネスを全自動設計中...</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-                    平川式メソッドに基づいて、<br/>構成・マニュアル・副産物を構築しています。<br/>
-                    (約10秒〜20秒かかります)
-                  </p>
-                </div>
-              </div>
-            )}
-
             {notification.show && (
               <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-in">
                 <div className={`px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 text-sm
@@ -526,7 +361,7 @@ ${structure.paid_bonus || '（特典未入力）'}
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400">
                           展開したい商材（アプリ）の基本情報を入力してください。<br/>
-                          入力後、下のボタンを押すだけでAIが<strong className="text-indigo-600 dark:text-indigo-400">1〜7まで全自動で構築</strong>します。
+                          入力が終わったら、<strong className="text-indigo-600 dark:text-indigo-400">Step1から順番に</strong>埋めていけば、note記事・代理店マニュアル・契約書まで自動で完成します。
                         </p>
                       </div>
 
@@ -565,19 +400,42 @@ ${structure.paid_bonus || '（特典未入力）'}
                         </div>
                       </div>
                       
-                      {/* AI全自動設計ボタン */}
-                      <div className="flex flex-col items-center justify-center mt-8">
+                      {/* APIなし版：プリセット読込 or 自分で進める案内 */}
+                      <div className="bg-gradient-to-br from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6 mt-8">
+                        <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+                          <Sparkles className="w-5 h-5 text-amber-500" />
+                          使い方は2通り
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <p className="font-bold text-slate-800 dark:text-white mb-2">📦 プリセットで体験</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                              画面右上の「プリセット読込(採用みっけ)」を押すと、サンプルデータ一式が読み込まれます。まずは完成イメージを掴みたい方におすすめです。
+                            </p>
+                          </div>
+                          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <p className="font-bold text-slate-800 dark:text-white mb-2">✏️ 自分で順番に埋める</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                              上の4項目を入力したら、下の「次へ進む」ボタンでStep1（変化設計）へ。一歩ずつ平川式メソッドで設計できます。
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end mt-8">
                         <button 
-                          onClick={generateWithAI} 
-                          disabled={isLoading || !project.name || !project.target}
-                          className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-lg w-full md:w-auto"
+                          onClick={() => { 
+                            if (!project.name || !project.target) {
+                              showNotification('「アプリ名」と「ターゲット層」を入力してください。', 'error');
+                              return;
+                            }
+                            showNotification('Step1（変化設計）へ進みます', 'success');
+                            setActiveTab('concept'); 
+                          }}
+                          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-md"
                         >
-                          <Sparkles className="w-6 h-6 text-amber-300" />
-                          ✨ AIに全自動で設計させる
+                          Step1（変化設計）へ進む <ArrowRight className="w-5 h-5" />
                         </button>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">
-                          ※「アプリ名」と「ターゲット層」の入力が必須です。約10秒ほどかかります。
-                        </p>
                       </div>
                     </div>
                   )}
