@@ -818,11 +818,11 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                         />
                       </div>
 
-                      {/* note表紙プロンプト＆ハッシュタグ セクション */}
+                      {/* note表紙プロンプト セクション */}
                       <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800 shadow-sm mt-6">
                         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                           <h3 className="font-bold text-lg text-purple-700 dark:text-purple-300 flex items-center gap-2">
-                            🎨 note表紙プロンプト ＆ ハッシュタグ
+                            🎨 note表紙プロンプト（MidJourney V8用）
                           </h3>
                           <button 
                             onClick={generateCoverAndHashtags}
@@ -834,7 +834,8 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                           </button>
                         </div>
                         <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
-                          MidJourney V8用の表紙プロンプト（--ar 191:100 / 1280×670対応）と、note記事用ハッシュタグ7つを自動生成します。
+                          ボタンを押すと、業種に合わせたMidJourney V8用プロンプト（--ar 191:100 / 1280×670対応）を自動生成します。<br/>
+                          ※ ハッシュタグ7つは note本文の末尾に自動で挿入されます（上の「全文をコピー」ボタンで反映）。
                         </p>
 
                         {/* キャッチ */}
@@ -850,7 +851,7 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                         </div>
 
                         {/* MidJourneyプロンプト */}
-                        <div className="mb-4">
+                        <div>
                           <div className="flex items-center justify-between mb-1">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">MidJourneyプロンプト</label>
                             <button 
@@ -868,35 +869,6 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                             rows={5}
                             className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-xs leading-relaxed focus:ring-2 focus:ring-purple-500 outline-none"
                           />
-                        </div>
-
-                        {/* ハッシュタグ */}
-                        <div>
-                          <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">ハッシュタグ（横書き7つ・note本文末尾に自動挿入）</label>
-                          <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded min-h-[48px]">
-                            {hashtags.length === 0 ? (
-                              <span className="text-xs text-slate-400">未生成（「✨ AIで生成」ボタンを押してください）</span>
-                            ) : (
-                              hashtags.map((tag, i) => (
-                                <span key={i} className="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-bold">
-                                  <input 
-                                    type="text"
-                                    value={tag}
-                                    onChange={(e) => {
-                                      const newTags = [...hashtags];
-                                      newTags[i] = e.target.value;
-                                      setHashtags(newTags);
-                                    }}
-                                    className="bg-transparent outline-none w-auto"
-                                    style={{width: `${Math.max(tag.length, 3)}ch`}}
-                                  />
-                                </span>
-                              ))
-                            )}
-                          </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                            ※ 各タグはクリックで編集可能です。上の「全文をコピー」を押すと、note本文の末尾に「#タグ1 #タグ2 …」と横書きで自動挿入されます。
-                          </p>
                         </div>
                       </div>
                       
