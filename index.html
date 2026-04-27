@@ -81,7 +81,9 @@
       products: [],
       checklist: { profile: false, header: false, snsLink: false, freePartCTA: false, actionPlan: false, setupLine: false },
       manual: { title: '', content: '' },
-      contract: { title: '', content: '' }
+      contract: { title: '', content: '' },
+      cover: { catch: '', prompt: '' },
+      hashtags: []
     };
 
     const DEMO_DATA = {
@@ -130,7 +132,12 @@
       contract: {
         title: '共創パートナー基本契約書',
         content: `〇〇〇〇（以下「甲」という）と、＿＿＿＿＿＿＿＿＿＿（以下「乙」という）は、甲が提供する各種サービスの普及および販売促進に関し、両者の共創によるビジネスの発展を目的として、以下の通り共創パートナー基本契約（以下「本契約」という）を締結する。\n\n第1条（目的）\n本契約は、甲が開発・運営するサービスを、乙が自己の顧客または見込み客に対して紹介・提案し、甲と当該顧客との間の利用契約の締結を斡旋する業務（以下「本業務」という）、およびそれに付随する業務について定めるものとする。\n\n第2条（対象サービス）\n本契約の対象となるサービスは、甲が別途指定する「採用みっけ」および「みっけシリーズ」のサービス全般とする。（※今後追加される新サービスについても、原則として本契約の対象に含むものとする。ただし、個別のサービスごとに報酬等の条件が異なる場合は、別途覚書にて定める）\n\n第3条（本業務の遂行）\n1. 乙は、善良なる管理者の注意をもって本業務を遂行するものとする。\n2. 乙は、サービスの紹介にあたり、甲が提供するマニュアルや資料を使用し、誇大広告や不実告知を行ってはならない。\n3. 乙は「下請け」や「単なる代理店」ではなく、共にサービスを世に広める「共創パートナー」として、現場での顧客の声を甲にフィードバックし、サービスの改善に協力するよう努めるものとする。\n\n第4条（紹介報酬）\n甲は乙に対し、乙の紹介によりサービスの利用契約が成立し、かつ当該顧客から甲への入金が確認された場合、別途定める報酬表または覚書に基づき、紹介報酬（継続報酬を含む）を支払うものとする。\n\n第5条（秘密保持）\n甲および乙は、本契約の履行に関連して知り得た相手方の営業上、技術上その他の業務上の秘密（個人情報を含む）を、事前の書面による承諾なく第三者に漏洩してはならず、本業務以外の目的に使用してはならない。\n\n第6条（反社会的勢力の排除）\n甲および乙は、自己または自己の役員等が、暴力団、暴力団員、暴力団関係企業、総会屋等の反社会的勢力に該当しないこと、および将来にわたっても該当しないことを表明し、保証する。\n\n第7条（契約期間）\n本契約の有効期間は、契約締結日から1年間とする。ただし、期間満了の1ヶ月前までに甲乙いずれからも書面による申し出がない場合は、さらに1年間自動的に更新されるものとし、以后も同様とする。\n\n第8条（協議事項）\n本契約に定めのない事項、または本契約の解釈に疑義が生じた事項については、甲乙誠意をもって協議の上、円満に解決するものとする。\n\n本契約の成立を証するため、本書2通を作成し、甲乙記名捺印の上、各1通を保有する。\n\n　　年　　月　　日\n\n（甲）本部・サービス提供者\n住所：\n名称：\n代表者：　　　　　　　　　　印\n\n（乙）共創パートナー\n住所：\n名称：\n代表者：　　　　　　　　　　印`
-      }
+      },
+      cover: {
+        catch: '採用相談、もう困らない。',
+        prompt: 'Modern flat illustration of a Japanese business consultant smiling confidently, holding a tablet showing a recruitment page, navy blue and white color scheme, clean professional business style, soft gradient background, Japanese text "採用相談、もう困らない。" inline at top right, --ar 191:100 --v 8'
+      },
+      hashtags: ['採用みっけ', '社労士', '中小企業', 'ストック収入', '代理店ビジネス', 'note', 'AI活用']
     };
 
     // ==========================================
@@ -155,10 +162,13 @@
       const [checklist, setChecklist] = useState(BLANK_DATA.checklist);
       const [manual, setManual] = useState(BLANK_DATA.manual);
       const [contract, setContract] = useState(BLANK_DATA.contract);
+      const [cover, setCover] = useState(BLANK_DATA.cover);
+      const [hashtags, setHashtags] = useState(BLANK_DATA.hashtags);
 
       const exportTextRef = useRef(null);
       const manualTextRef = useRef(null);
       const contractTextRef = useRef(null);
+      const coverPromptRef = useRef(null);
 
       useEffect(() => {
         if (!concept.target && project.target) {
@@ -179,6 +189,8 @@
         setChecklist(DEMO_DATA.checklist);
         setManual(DEMO_DATA.manual);
         setContract(DEMO_DATA.contract);
+        setCover(DEMO_DATA.cover);
+        setHashtags(DEMO_DATA.hashtags);
         showNotification('デモデータ（採用みっけ版）を読み込みました！', 'success');
         setActiveTab('project');
       };
@@ -191,6 +203,8 @@
         setChecklist(BLANK_DATA.checklist);
         setManual(BLANK_DATA.manual);
         setContract(BLANK_DATA.contract);
+        setCover(BLANK_DATA.cover);
+        setHashtags(BLANK_DATA.hashtags);
         showNotification('データをクリアしました', 'info');
         setActiveTab('project');
       };
@@ -344,6 +358,50 @@
         }
       };
 
+      // ==========================================
+      // note表紙プロンプト＆ハッシュタグ生成（Cloudflare Worker経由）
+      // ==========================================
+      const generateCoverAndHashtags = async () => {
+        if (!project.name || !concept.target) {
+          showNotification('「アプリ名」と「ターゲット層」が必要です。Step 0と1を先に入力してください。', 'error');
+          return;
+        }
+
+        setLoadingMessage('AIが表紙プロンプト＆ハッシュタグを生成中...');
+        setIsLoading(true);
+        try {
+          const response = await fetch(WORKER_URL + 'generate-cover', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              project, 
+              concept,
+              structure 
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.cover || !data.hashtags) {
+            throw new Error('AIからの応答が不完全です。もう一度お試しください。');
+          }
+
+          setCover(data.cover);
+          setHashtags(data.hashtags.slice(0, 7));
+          showNotification('🎨 表紙プロンプト＆ハッシュタグを生成しました！', 'success');
+        } catch (error) {
+          console.error(error);
+          showNotification('生成に失敗しました。詳細: ' + error.message, 'error');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       const generateExportText = () => {
         return `# ${structure.free_title || `【完全版】${project.name || '〇〇'} 代理店マニュアル`}
 
@@ -392,7 +450,7 @@ ${structure.paid_bonus || '（特典未入力）'}
 【ご質問・サポート窓口】
 実践する中でわからないことがあれば、以下の専用LINEまでお気軽にご相談ください。
 ▶ ${concept.lineUrl || '（※未設定）'}
-`;
+${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
       };
 
       const initializeManual = () => {
@@ -758,6 +816,88 @@ ${structure.paid_bonus || '（特典未入力）'}
                           value={generateExportText()}
                           className="w-full h-[500px] p-6 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-sm outline-none resize-none"
                         />
+                      </div>
+
+                      {/* note表紙プロンプト＆ハッシュタグ セクション */}
+                      <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800 shadow-sm mt-6">
+                        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                          <h3 className="font-bold text-lg text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                            🎨 note表紙プロンプト ＆ ハッシュタグ
+                          </h3>
+                          <button 
+                            onClick={generateCoverAndHashtags}
+                            disabled={isLoading || !project.name || !concept.target}
+                            className="bg-purple-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-purple-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            <Sparkles className="w-4 h-4 text-amber-300" />
+                            ✨ AIで生成
+                          </button>
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
+                          MidJourney V8用の表紙プロンプト（--ar 191:100 / 1280×670対応）と、note記事用ハッシュタグ7つを自動生成します。
+                        </p>
+
+                        {/* キャッチ */}
+                        <div className="mb-4">
+                          <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">表紙キャッチ（10文字程度）</label>
+                          <input 
+                            type="text" 
+                            value={cover.catch} 
+                            onChange={(e) => setCover({...cover, catch: e.target.value})}
+                            placeholder="例：採用相談、もう困らない。"
+                            className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-white font-bold focus:ring-2 focus:ring-purple-500 outline-none"
+                          />
+                        </div>
+
+                        {/* MidJourneyプロンプト */}
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">MidJourneyプロンプト</label>
+                            <button 
+                              onClick={() => handleCopy(coverPromptRef, 'プロンプトをコピーしました！MidJourneyに貼り付けてください')}
+                              className="text-xs bg-slate-700 dark:bg-slate-600 text-white px-3 py-1 rounded font-bold flex items-center gap-1 hover:bg-slate-800 transition"
+                            >
+                              <Copy className="w-3 h-3" /> コピー
+                            </button>
+                          </div>
+                          <textarea
+                            ref={coverPromptRef}
+                            value={cover.prompt}
+                            onChange={(e) => setCover({...cover, prompt: e.target.value})}
+                            placeholder="「✨ AIで生成」ボタンを押すと、業種に合わせた表紙プロンプトが自動生成されます"
+                            rows={5}
+                            className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-xs leading-relaxed focus:ring-2 focus:ring-purple-500 outline-none"
+                          />
+                        </div>
+
+                        {/* ハッシュタグ */}
+                        <div>
+                          <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">ハッシュタグ（横書き7つ・note本文末尾に自動挿入）</label>
+                          <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded min-h-[48px]">
+                            {hashtags.length === 0 ? (
+                              <span className="text-xs text-slate-400">未生成（「✨ AIで生成」ボタンを押してください）</span>
+                            ) : (
+                              hashtags.map((tag, i) => (
+                                <span key={i} className="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-bold">
+                                  <input 
+                                    type="text"
+                                    value={tag}
+                                    onChange={(e) => {
+                                      const newTags = [...hashtags];
+                                      newTags[i] = e.target.value;
+                                      setHashtags(newTags);
+                                    }}
+                                    className="bg-transparent outline-none w-auto"
+                                    style={{width: `${Math.max(tag.length, 3)}ch`}}
+                                  />
+                                </span>
+                              ))
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                            ※ 各タグはクリックで編集可能です。上の「全文をコピー」を押すと、note本文の末尾に「#タグ1 #タグ2 …」と横書きで自動挿入されます。
+                          </p>
+                        </div>
                       </div>
                       
                       <div className="flex justify-end mt-6">
