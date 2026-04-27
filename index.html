@@ -75,7 +75,9 @@
     // データ初期値
     // ==========================================
     const BLANK_DATA = {
+      mode: 'agency',
       project: { name: '', url: '', description: '', target: '' },
+      direct: { notePrice: 1480, appUrl: '', appPrice: 2980, lineUrl: '' },
       concept: { target: '', pain: '', before: '', after: '', initialPrice: 1000, targetPrice: 10000, priceCondition: '', salesTarget: 10, lineUrl: '', catalogUrl: '' },
       structure: { free_title: '', free_intro: '', free_pain: '', free_solution: '', free_profile_past: '', free_profile_encounter: '', free_profile_current: '', free_cta: '', paid_intro: '', paid_main: '', paid_pitfall: '', paid_action: '', paid_bonus: '' },
       products: [],
@@ -87,12 +89,14 @@
     };
 
     const DEMO_DATA = {
+      mode: 'agency',
       project: { 
         name: '採用みっけ', 
         url: 'https://spc-jp.github.io/mikke-catalog/#saiyou', 
         description: '地方の中小企業向け。高額な求人サイトに頼らず、自社の魅力をAIが分析して最適な採用ページを自動生成するシステム。', 
         target: '地方の社会保険労務士（社労士）や、中小企業向けのコンサルタント。顧問先に「採用力強化ツール」として提案して副収入を得たい人。' 
       },
+      direct: { notePrice: 1480, appUrl: 'https://saiyou-mikke.pages.dev/', appPrice: 2980, lineUrl: 'https://lin.ee/example' },
       concept: {
         target: '顧問先の採用課題を解決し、自社の単価アップ・副収入を得たい社労士・コンサルタント',
         pain: '顧問先から「人が採れない」と相談されるが、求人媒体を勧めるくらいしかできず、根本的な解決策を提供できていない。新しいキャッシュポイントが欲しい。',
@@ -155,7 +159,9 @@
       const [isLoading, setIsLoading] = useState(false);
       const [loadingMessage, setLoadingMessage] = useState('AIがビジネスを全自動設計中...');
       
+      const [mode, setMode] = useState(BLANK_DATA.mode);
       const [project, setProject] = useState(BLANK_DATA.project);
+      const [direct, setDirect] = useState(BLANK_DATA.direct);
       const [concept, setConcept] = useState(BLANK_DATA.concept);
       const [structure, setStructure] = useState(BLANK_DATA.structure);
       const [products, setProducts] = useState(BLANK_DATA.products);
@@ -182,7 +188,9 @@
       };
 
       const loadDemoData = () => {
+        setMode(DEMO_DATA.mode);
         setProject(DEMO_DATA.project);
+        setDirect(DEMO_DATA.direct);
         setConcept(DEMO_DATA.concept);
         setStructure(DEMO_DATA.structure);
         setProducts(DEMO_DATA.products);
@@ -196,7 +204,9 @@
       };
 
       const clearData = () => {
+        setMode(BLANK_DATA.mode);
         setProject(BLANK_DATA.project);
+        setDirect(BLANK_DATA.direct);
         setConcept(BLANK_DATA.concept);
         setStructure(BLANK_DATA.structure);
         setProducts(BLANK_DATA.products);
@@ -308,13 +318,13 @@
           return;
         }
 
-        setLoadingMessage('AIがビジネスを全自動設計中...');
+        setLoadingMessage(mode === 'direct' ? 'AIが直販note記事を執筆中...' : 'AIがビジネスを全自動設計中...');
         setIsLoading(true);
         try {
           const response = await fetch(WORKER_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ project })
+            body: JSON.stringify({ mode, project, direct })
           });
 
           if (!response.ok) {
@@ -555,9 +565,100 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                           Step 0. プロジェクト基本設定
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400">
-                          まず<strong className="text-indigo-600 dark:text-indigo-400">アプリ名とURL</strong>を入力 → AIが概要・ターゲットを自動整理 → 確認・修正後に<strong className="text-indigo-600 dark:text-indigo-400">1〜7まで全自動構築</strong>、という流れです。
+                          まず<strong className="text-indigo-600 dark:text-indigo-400">モードを選択</strong> → アプリ情報を入力 → AIが記事を全自動構築、という流れです。
                         </p>
                       </div>
+
+                      {/* モード切替トグル */}
+                      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border-2 border-indigo-200 dark:border-indigo-800 shadow-sm">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">MODE</span>
+                          <h3 className="font-bold text-lg">どちら向けの記事を作りますか？</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <button
+                            onClick={() => setMode('agency')}
+                            className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'agency' ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 shadow-md' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-indigo-400'}`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">🎯</span>
+                              <span className="font-bold text-base">代理店モード</span>
+                              {mode === 'agency' && <span className="ml-auto text-indigo-600 dark:text-indigo-400 text-xs font-bold">✓ 選択中</span>}
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">
+                              パートナー候補に「代理店として一緒にやりませんか？」と仲間集めをする記事
+                            </p>
+                          </button>
+                          <button
+                            onClick={() => setMode('direct')}
+                            className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'direct' ? 'border-pink-600 bg-pink-50 dark:bg-pink-900/30 shadow-md' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-pink-400'}`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">🛒</span>
+                              <span className="font-bold text-base">直販モード</span>
+                              {mode === 'direct' && <span className="ml-auto text-pink-600 dark:text-pink-400 text-xs font-bold">✓ 選択中</span>}
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">
+                              中小企業の社長さんへ。アプリを直接売るYoshiBon文体の記事
+                            </p>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 直販モード時のみ表示：追加入力欄 */}
+                      {mode === 'direct' && (
+                        <div className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 p-6 rounded-xl border border-pink-200 dark:border-pink-800 shadow-sm space-y-4">
+                          <div className="flex items-center gap-2 pb-2 border-b border-pink-200 dark:border-pink-800">
+                            <span className="bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded">直販モード専用</span>
+                            <h3 className="font-bold text-lg">販売情報・誘導先URL</h3>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">📝 note記事の販売価格（円）</label>
+                              <input 
+                                type="number" 
+                                value={direct.notePrice}
+                                onChange={(e) => setDirect({...direct, notePrice: parseInt(e.target.value) || 0})}
+                                placeholder="1480"
+                                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">💰 アプリ本体の月額料金（円）</label>
+                              <input 
+                                type="number" 
+                                value={direct.appPrice}
+                                onChange={(e) => setDirect({...direct, appPrice: parseInt(e.target.value) || 0})}
+                                placeholder="2980"
+                                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">🔗 アプリ本体URL（記事末で誘導する先）</label>
+                            <input 
+                              type="text" 
+                              value={direct.appUrl}
+                              onChange={(e) => setDirect({...direct, appUrl: e.target.value})}
+                              placeholder="例：https://saiyou-mikke.pages.dev/"
+                              className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-bold mb-1 text-slate-700 dark:text-slate-300">💬 LINE誘導URL（特典・サポート窓口）</label>
+                            <input 
+                              type="text" 
+                              value={direct.lineUrl}
+                              onChange={(e) => setDirect({...direct, lineUrl: e.target.value})}
+                              placeholder="例：https://lin.ee/xxxxx"
+                              className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none"
+                            />
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">
+                            ※ 上記4項目は、AIが記事末のCTA（行動喚起文）を自動生成する際に使われます。
+                          </p>
+                        </div>
+                      )}
 
                       {/* Step 0-A：アプリ名＆URL入力 + AI分析 */}
                       <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
@@ -615,11 +716,11 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                         />
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                           <EditorField 
-                            label="代理店になってもらいたいターゲット層（誰にこのビジネスを教えるか？）" 
+                            label={mode === 'direct' ? '記事を読んでもらいたいターゲット層（誰に向けたnoteか？）' : '代理店になってもらいたいターゲット層（誰にこのビジネスを教えるか？）'} 
                             name="target" 
                             value={project.target} 
                             onChange={handleChange(setProject)} 
-                            placeholder="STEP 0-Aの「✨整理させる」ボタンを押すか、ここに直接入力してください" 
+                            placeholder={mode === 'direct' ? '例：採用に困っている地方の中小企業の社長、ひとり社長' : 'STEP 0-Aの「✨整理させる」ボタンを押すか、ここに直接入力してください'} 
                             rows={4}
                           />
                         </div>
@@ -630,13 +731,15 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                         <button 
                           onClick={generateWithAI} 
                           disabled={isLoading || !project.name || !project.target}
-                          className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-lg w-full md:w-auto"
+                          className={`text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 transition-all shadow-lg hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-lg w-full md:w-auto ${mode === 'direct' ? 'bg-pink-600 hover:bg-pink-700 hover:shadow-pink-500/50' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-500/50'}`}
                         >
                           <Sparkles className="w-6 h-6 text-amber-300" />
-                          ✨ Step 1〜7まで全自動で設計させる
+                          {mode === 'direct' ? '✨ 直販note記事を全自動で書かせる' : '✨ Step 1〜7まで全自動で設計させる'}
                         </button>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">
-                          ※「アプリ名」と「ターゲット層」が入力済みなら押せます。約10〜20秒かかります。
+                          {mode === 'direct' 
+                            ? '※「アプリ名」「ターゲット層」「アプリ本体URL」が入力済みなら押せます。約20〜30秒かかります。' 
+                            : '※「アプリ名」と「ターゲット層」が入力済みなら押せます。約10〜20秒かかります。'}
                         </p>
                       </div>
                     </div>
