@@ -464,6 +464,13 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
       };
 
       const initializeManual = () => {
+        // 直販モード時の特典3点セット雛形
+        if (mode === 'direct') {
+          let directContent = manual.content || `【はじめに】\nここまで読んでくださってありがとうございます😊\nこの特典は、本編で紹介した内容を「実際に使いこなす」ためのセットです。\n\n━━━━━━━━━━━━━━━━━\n■ 特典1：${project.name || '〇〇'}活用ヒント集\n━━━━━━━━━━━━━━━━━\n本編の補足として、シーン別の活用ガイドをまとめました。\n\n・シーン1：〇〇のとき\n  → こう使います\n\n・シーン2：〇〇のとき\n  → こう使います\n\n・シーン3：〇〇のとき\n  → こう使います\n\n━━━━━━━━━━━━━━━━━\n■ 特典2：業種別プロンプト集\n━━━━━━━━━━━━━━━━━\nコピペでそのまま使える、業種別のプロンプトです。\n\n【製造業向け】\n〇〇\n\n【飲食業向け】\n〇〇\n\n【美容業向け】\n〇〇\n\n━━━━━━━━━━━━━━━━━\n■ 特典3：1週間運用チェックリスト\n━━━━━━━━━━━━━━━━━\n買って終わり、ではもったいない。\n1週間でしっかり成果を体感するための、日々のチェック項目です。\n\n□ Day1：〇〇を試す\n□ Day2：〇〇を確認する\n□ Day3：〇〇をやってみる\n□ Day4：〇〇を見直す\n□ Day5：〇〇を実践する\n□ Day6：〇〇を振り返る\n□ Day7：今週の気づきをメモする\n\n━━━━━━━━━━━━━━━━━\n■ おわりに\n━━━━━━━━━━━━━━━━━\n本特典を活用しながら、ぜひアプリ本体も使ってみてください。\n\n▶ ${project.name || 'アプリ'}本体（月額${direct.appPrice ? direct.appPrice.toLocaleString() + '円' : '〇〇円'}）\n${direct.appUrl || '[アプリ本体URL未設定]'}\n\nわからないことがあれば、LINEまでお気軽にご相談ください。\n▶ ${direct.lineUrl || '[LINE未設定]'}\n\n「考えるを、ひとりにしない」\nあなたの一歩を、心から応援しています。`;
+          return directContent;
+        }
+
+        // 代理店モード（既存ロジック）
         let content = manual.content || `【はじめに】\nこのマニュアルの目的や使い方を簡単に記載します。\n\nnote本編の目次に合わせて、以下を埋めてください。\n\n■ 第1章：〇〇〇〇\n・ \n  - \n・ \n  - \n\n■ 第2章：〇〇〇〇\n・ [手順1] \n・ [手順2] \n\n■ 第3章：〇〇〇〇（提案スクリプト等）\n・ 件名：\n・ 本文：\n\n\n■ 第4章：〇〇〇〇\n・ [手順1] 以下の『${project.name || 'カタログサイト'}』をお客様と一緒に見ながら説明します。\n  ▶ ${concept.catalogUrl || project.url || '[URL未設定]'}\n・ [手順2] \n\n---\n■ ご質問・サポート窓口\n実践していてつまずいた場合は、いつでも専用LINEにご相談ください。\n▶ ${concept.lineUrl || '[LINE未設定]'}`;
         
         if (manual.content && manual.content.includes('自動挿入設定箇所')) {
@@ -531,7 +538,7 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                 <div className="my-2 border-t border-slate-200 dark:border-slate-700"></div>
                 
                 <SidebarItem icon={<FileText className="w-5 h-5"/>} label="5. note下書き出力" active={activeTab === 'export'} onClick={() => setActiveTab('export')} />
-                <SidebarItem icon={<BookType className="w-5 h-5"/>} label="6. 特典マニュアル" active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} />
+                <SidebarItem icon={<BookType className="w-5 h-5"/>} label={mode === 'direct' ? '6. 購入者特典' : '6. 特典マニュアル'} active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} />
                 <SidebarItem icon={<Handshake className="w-5 h-5"/>} label="7. 共創パートナー契約" active={activeTab === 'contract'} onClick={() => setActiveTab('contract')} />
               </nav>
             </div>
@@ -977,10 +984,10 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                       
                       <div className="flex justify-end mt-6">
                         <button 
-                          onClick={() => { showNotification('次は代理店マニュアルを作成します', 'success'); setActiveTab('manual'); }}
-                          className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md"
+                          onClick={() => { showNotification(mode === 'direct' ? '次は購入者特典を作成します' : '次は代理店マニュアルを作成します', 'success'); setActiveTab('manual'); }}
+                          className={`text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 transition shadow-md ${mode === 'direct' ? 'bg-pink-600 hover:bg-pink-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                         >
-                          <BookType className="w-5 h-5" /> 特典マニュアル作成に進む
+                          <BookType className="w-5 h-5" /> {mode === 'direct' ? '購入者特典を作成する' : '特典マニュアル作成に進む'}
                         </button>
                       </div>
                     </div>
@@ -990,12 +997,16 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                     <div className="space-y-6 animate-in">
                       <div className="flex justify-between items-end mb-4">
                         <div>
-                          <h2 className="text-2xl font-bold mb-2">特典マニュアル作成 (Word用)</h2>
-                          <p className="text-slate-500 dark:text-slate-400">note本編の「目次」と完全にリンクした構成で、代理店に渡せる実践マニュアルを作成します。</p>
+                          <h2 className="text-2xl font-bold mb-2">{mode === 'direct' ? '🎁 購入者特典 作成 (Word用)' : '特典マニュアル作成 (Word用)'}</h2>
+                          <p className="text-slate-500 dark:text-slate-400">
+                            {mode === 'direct' 
+                              ? 'note記事の購入者に届ける「3点セット特典」（活用ヒント／プロンプト集／チェックリスト）を作成します。'
+                              : 'note本編の「目次」と完全にリンクした構成で、代理店に渡せる実践マニュアルを作成します。'}
+                          </p>
                         </div>
                         <button 
-                          onClick={() => handleCopy(manualTextRef, 'マニュアルをコピーしました！WordやGoogleドキュメントに貼り付けてください')}
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-md"
+                          onClick={() => handleCopy(manualTextRef, mode === 'direct' ? '特典をコピーしました！Wordに貼り付けてPDF化してください' : 'マニュアルをコピーしました！WordやGoogleドキュメントに貼り付けてください')}
+                          className={`text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition shadow-md ${mode === 'direct' ? 'bg-pink-600 hover:bg-pink-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                         >
                           <Copy className="w-4 h-4" /> Word用にコピー
                         </button>
@@ -1006,9 +1017,9 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                           <input 
                             type="text" 
                             name="title"
-                            value={manual.title || `【完全版】${project.name || '〇〇'} 代理店営業マニュアル`}
+                            value={manual.title || (mode === 'direct' ? `【${project.name || '〇〇'}購入者限定】アプリ活用ヒント＆実践セット` : `【完全版】${project.name || '〇〇'} 代理店営業マニュアル`)}
                             onChange={handleChange(setManual)}
-                            placeholder="マニュアルのタイトルを入力"
+                            placeholder={mode === 'direct' ? '特典のタイトルを入力' : 'マニュアルのタイトルを入力'}
                             className="w-full text-2xl md:text-3xl font-bold text-center mb-8 border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none text-slate-800 bg-transparent transition-colors"
                           />
                           <textarea
@@ -1016,7 +1027,7 @@ ${hashtags.length > 0 ? `\n${hashtags.map(t => `#${t}`).join(' ')}\n` : ''}`;
                             name="content"
                             value={initializeManual()}
                             onChange={(e) => setManual({...manual, content: e.target.value})}
-                            placeholder="ここにマニュアルの本文、提案スクリプト、ターゲットなどを記述します。"
+                            placeholder={mode === 'direct' ? 'ここに購入者特典の本文を記述します（活用ヒント／プロンプト集／チェックリスト）' : 'ここにマニュアルの本文、提案スクリプト、ターゲットなどを記述します。'}
                             className="w-full h-[850px] text-base leading-relaxed text-slate-800 outline-none resize-none bg-transparent"
                           />
                         </div>
